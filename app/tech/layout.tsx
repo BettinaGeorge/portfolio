@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
+import { TechThemeProvider } from "@/components/tech/TechThemeProvider";
 
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -16,5 +17,9 @@ export default function TechLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className={jetBrainsMono.variable}>{children}</div>;
+  return (
+    <div className={`${jetBrainsMono.variable} tech-cursor`}>
+      <TechThemeProvider>{children}</TechThemeProvider>
+    </div>
+  );
 }

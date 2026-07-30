@@ -35,3 +35,17 @@ body {
 .cursor-blink {
   animation: blink 1s step-end infinite;
 }
+
+/* terminal-style cursor: text (I-beam) everywhere on the tech site, */
+/* reverting to the plain arrow only over clickable elements */
+.tech-cursor,
+.tech-cursor * {
+  cursor: text;
+}
+
+.tech-cursor a,
+.tech-cursor button,
+.tech-cursor a *,
+.tech-cursor button * {
+  cursor: default;
+}

@@ -5,13 +5,16 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { TechIconStream } from "./TechIconStream";
+import { ThemeToggle } from "./ThemeToggle";
+import { useTechTheme } from "./TechThemeProvider";
+import { accent, shadow, type TechTheme } from "@/lib/tech-theme";
 
-function Prompt({ command }: { command: string }) {
+function Prompt({ command, theme }: { command: string; theme: TechTheme }) {
   return (
     <p style={{ fontSize: 13, lineHeight: 1.5, fontFamily: "inherit" }}>
-      <span style={{ color: "#ff2d55", fontWeight: 700 }}>bettina@portfolio</span>
-      <span style={{ color: "#553344" }}>:~ </span>
-      <span style={{ color: "#f0e6d3" }}>$ {command}</span>
+      <span style={{ color: theme.accent, fontWeight: 700 }}>bettina@portfolio</span>
+      <span style={{ color: theme.dim }}>:~ </span>
+      <span style={{ color: theme.heading }}>$ {command}</span>
     </p>
   );
 }
@@ -46,6 +49,7 @@ const printenvData = [
 ];
 
 const projects = [
+  { name: "context-os/",     url: "/tech/projects", note: "AI Developer Platform" },
   { name: "quiet-table/",    url: "/tech/projects", note: "🏆 1st Place · Pearl Hacks 2026" },
   { name: "creator-intel/",  url: "/tech/projects", note: "AI · Full-Stack" },
   { name: "duolingo-watch/", url: "/tech/projects", note: "APM · Product" },
@@ -54,10 +58,13 @@ const projects = [
 ];
 
 const commits = [
-  { hash: "a1b2c3d", msg: "Software Engineering Intern — Lowe's Tech Hub",   period: "May – Aug 2025 · Returning 2026" },
+  { hash: "a1b2c3d", msg: "Software Engineer Intern 2X — Lowe's Tech Hub", period: "May 2026 – Present" },
+  { hash: "b7c8d9e", msg: "AI Engineering Fellow — CodePath",                 period: "May 2026 – Present" },
   { hash: "b4e5f6a", msg: "Applied AI Research Fellow — Handshake",           period: "Dec 2025 – Present"  },
   { hash: "c7d8e9f", msg: "AI/ML Research Fellow — KPMG + Break Through Tech",period: "May 2025 – Jun 2026" },
-  { hash: "d1e2f3a", msg: "Undergraduate Teaching Assistant — UNC CS COMP 110",period: "Aug 2025 – Present"  },
+  { hash: "d1e2f3a", msg: "Undergraduate Teaching Assistant — UNC CS COMP 110",period: "Aug 2025 – May 2026"  },
+  { hash: "f1e2d3c", msg: "Instructional Tech and Design Support — UNC School of Government", period: "Aug 2024 – Mar 2026" },
+  { hash: "a0b1c2d", msg: "Software Engineer Intern — Lowe's Tech Hub",    period: "May 2025 – Jul 2025" },
   { hash: "e4f5a6b", msg: "Interactive Course Developer — UNC School of Medicine", period: "Mar – Jul 2024"  },
 ];
 
@@ -71,6 +78,7 @@ const contactData = [
 
 export function TerminalPage() {
   const router = useRouter();
+  const { theme } = useTechTheme();
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -89,10 +97,11 @@ export function TerminalPage() {
     /* ── outer page: dark atmosphere behind the window ── */
     <div
       style={{
-        background: "#0a0003",
+        background: theme.pageBg,
         minHeight: "100vh",
         position: "relative",
         fontFamily: "var(--font-jetbrains-mono), 'JetBrains Mono', monospace",
+        transition: "background 0.3s",
       }}
     >
       {/* animated tech-stack icon rain in background */}
@@ -106,13 +115,14 @@ export function TerminalPage() {
           maxWidth: 820,
           margin: "0 auto",
           minHeight: "100vh",
-          background: "#0f0008",
-          borderLeft:  "1px solid rgba(255,45,85,0.1)",
-          borderRight: "1px solid rgba(255,45,85,0.1)",
+          background: theme.panelBg,
+          borderLeft:  `1px solid ${accent(theme, 0.1)}`,
+          borderRight: `1px solid ${accent(theme, 0.1)}`,
           boxShadow:
-            "0 0 0 1px rgba(255,45,85,0.04), " +
-            "-40px 0 120px rgba(0,0,0,0.6), " +
-            "40px 0 120px rgba(0,0,0,0.6)",
+            `0 0 0 1px ${accent(theme, 0.04)}, ` +
+            `-40px 0 120px ${shadow(theme, 0.6)}, ` +
+            `40px 0 120px ${shadow(theme, 0.6)}`,
+          transition: "background 0.3s",
         }}
       >
         {/* ── window chrome ──────────────────────────────────── */}
@@ -121,8 +131,9 @@ export function TerminalPage() {
             position: "sticky",
             top: 0,
             zIndex: 50,
-            background: "#1a0810",
-            borderBottom: "1px solid #2d0a18",
+            background: theme.chromeBg,
+            borderBottom: `1px solid ${theme.chromeBorder}`,
+            transition: "background 0.3s, border-color 0.3s",
           }}
         >
           <div
@@ -140,106 +151,109 @@ export function TerminalPage() {
               title="back to home"
               style={{
                 width: 12, height: 12, borderRadius: "50%",
-                background: "#ff5f57", border: "none", cursor: "pointer",
+                background: "#ff5f57", border: "none", cursor: "default",
               }}
             />
             <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#febc2e", display: "inline-block" }} />
             <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#28c840", display: "inline-block" }} />
 
             {/* title */}
-            <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#3d1a28", userSelect: "none" }}>
+            <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: theme.faint, userSelect: "none" }}>
               bettina@portfolio — ~ — 120×40
             </div>
 
-            {/* home + clock */}
+            {/* home + clock + theme toggle */}
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <button
                 onClick={() => router.push("/")}
                 style={{
-                  fontSize: 11, color: "#3d1a28",
-                  background: "none", border: "none", cursor: "pointer",
+                  fontSize: 11, color: theme.faint,
+                  background: "none", border: "none", cursor: "default",
                   fontFamily: "inherit",
                   transition: "color 0.2s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#ff2d55")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#3d1a28")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = theme.accent)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = theme.faint)}
               >
                 ← home
               </button>
-              <span style={{ fontSize: 12, color: "#553344" }}>{time}</span>
+              <span style={{ fontSize: 12, color: theme.dim }}>{time}</span>
+              <ThemeToggle />
             </div>
           </div>
         </div>
 
         {/* ── terminal body ──────────────────────────────────── */}
-        <div style={{ padding: "40px 48px 80px" }}>
+        <div style={{ padding: "30px 38px 60px" }}>
 
           {/* whoami -------------------------------------------- */}
           <Block delay={0.1}>
-            <Prompt command="whoami" />
-            <div
-              style={{
-                margin: "20px 0 12px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 32,
-                flexWrap: "wrap",
-              }}
-            >
-              <div>
+            <Prompt command="whoami" theme={theme} />
+            <div style={{ margin: "20px 0 12px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 32,
+                  flexWrap: "wrap",
+                }}
+              >
                 <h1
                   style={{
                     fontWeight: 700,
-                    color: "#ff2d55",
+                    color: theme.accent,
                     lineHeight: 0.88,
                     letterSpacing: "-0.02em",
                     fontSize: "clamp(3.5rem, 10vw, 7rem)",
-                    marginBottom: 16,
+                    margin: 0,
                   }}
                 >
                   Bettina<br />George
                 </h1>
-                <p style={{ color: "#c4a882", fontSize: 14, marginBottom: 10 }}>
-                  Software Engineer · AI Engineer
-                </p>
-                <p style={{ color: "#553344", fontSize: 13, fontStyle: "italic", lineHeight: 1.6 }}>
-                  &quot;Some people build with code. Others build with creativity.<br />&nbsp;I like to think I do both.&quot;
-                </p>
+
+                <div style={{ flexShrink: 0 }}>
+                  <Image
+                    src="/img/headshot.png"
+                    alt="Bettina George"
+                    width={180}
+                    height={180}
+                    style={{
+                      width: 180,
+                      height: 180,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      objectPosition: "center top",
+                      border: `2px solid ${theme.accent}`,
+                      boxShadow: `0 0 0 6px ${accent(theme, 0.1)}, 0 0 40px ${accent(theme, 0.2)}`,
+                      filter: "grayscale(20%)",
+                      display: "block",
+                    }}
+                  />
+                </div>
               </div>
 
-              <div style={{ flexShrink: 0 }}>
-                <Image
-                  src="/img/headshot.png"
-                  alt="Bettina George"
-                  width={150}
-                  height={150}
-                  style={{
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    objectPosition: "center top",
-                    border: "2px solid #ff2d55",
-                    boxShadow: "0 0 0 6px rgba(255,45,85,0.1), 0 0 40px rgba(255,45,85,0.2)",
-                    filter: "grayscale(20%)",
-                    display: "block",
-                  }}
-                />
-              </div>
+              <p style={{ color: theme.body, fontSize: 14, marginTop: 16, marginBottom: 10 }}>
+                Software Engineer · AI Engineer
+              </p>
+              <p style={{ color: theme.dim, fontSize: 13, fontStyle: "italic", lineHeight: 1.6 }}>
+                &quot;Some people build with code. Others build with creativity.<br />&nbsp;I like to think I do both.&quot;
+              </p>
             </div>
           </Block>
 
           {/* printenv ------------------------------------------ */}
           <Block>
-            <Prompt command="printenv" />
+            <Prompt command="printenv" theme={theme} />
             <div style={{ marginTop: 12 }}>
               {printenvData.map(({ key, value }) => (
                 <div
                   key={key}
                   style={{ display: "flex", gap: 0, fontSize: 13, lineHeight: 1.8 }}
                 >
-                  <span style={{ color: "#553344", minWidth: 120 }}>{key}</span>
-                  <span style={{ color: "#555577" }}>&nbsp;=&nbsp;</span>
-                  <span style={{ color: "#ff2d55" }}>{value}</span>
+                  <span style={{ color: theme.dim, minWidth: 120 }}>{key}</span>
+                  <span style={{ color: theme.faint }}>&nbsp;=&nbsp;</span>
+                  <span style={{ color: theme.accent }}>{value}</span>
                 </div>
               ))}
             </div>
@@ -247,7 +261,7 @@ export function TerminalPage() {
 
           {/* ls projects/ -------------------------------------- */}
           <Block>
-            <Prompt command="ls projects/" />
+            <Prompt command="ls projects/" theme={theme} />
             <div
               style={{
                 marginTop: 12,
@@ -261,7 +275,7 @@ export function TerminalPage() {
                 <a
                   key={p.name}
                   href={p.url}
-                  style={{ color: "#ff2d55", textDecoration: "none" }}
+                  style={{ color: theme.accent, textDecoration: "none" }}
                   onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
                   onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
                 >
@@ -271,9 +285,9 @@ export function TerminalPage() {
             </div>
             <a
               href="/tech/projects"
-              style={{ color: "#553344", fontSize: 12, fontStyle: "italic", marginTop: 12, display: "inline-block", textDecoration: "none" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ff2d55")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#553344")}
+              style={{ color: theme.dim, fontSize: 12, fontStyle: "italic", marginTop: 12, display: "inline-block", textDecoration: "none" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = theme.accent)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = theme.dim)}
             >
               // click link to view details →
             </a>
@@ -281,7 +295,7 @@ export function TerminalPage() {
 
           {/* git log --career ---------------------------------- */}
           <Block>
-            <Prompt command="git log --career --oneline" />
+            <Prompt command="git log --career --oneline" theme={theme} />
             <div style={{ marginTop: 12 }}>
               {commits.map((c) => (
                 <a
@@ -291,17 +305,17 @@ export function TerminalPage() {
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.75")}
                   onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                 >
-                  <span style={{ color: "#ff6b35", flexShrink: 0 }}>{c.hash}</span>
-                  <span style={{ color: "#f0e6d3", flex: 1 }}>{c.msg}</span>
-                  <span style={{ color: "#3d1a28", flexShrink: 0 }}>{c.period}</span>
+                  <span style={{ color: theme.hash, flexShrink: 0 }}>{c.hash}</span>
+                  <span style={{ color: theme.heading, flex: 1 }}>{c.msg}</span>
+                  <span style={{ color: theme.faint, flexShrink: 0 }}>{c.period}</span>
                 </a>
               ))}
             </div>
             <a
               href="/tech/experience"
-              style={{ color: "#553344", fontSize: 12, fontStyle: "italic", marginTop: 12, display: "inline-block", textDecoration: "none" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ff2d55")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#553344")}
+              style={{ color: theme.dim, fontSize: 12, fontStyle: "italic", marginTop: 12, display: "inline-block", textDecoration: "none" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = theme.accent)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = theme.dim)}
             >
               // click to view full experience →
             </a>
@@ -309,27 +323,27 @@ export function TerminalPage() {
 
           {/* cat contact.txt ----------------------------------- */}
           <Block>
-            <Prompt command="cat contact.txt" />
+            <Prompt command="cat contact.txt" theme={theme} />
             <div style={{ marginTop: 12 }}>
               {contactData.map(({ key, value, href }) => (
                 <div
                   key={key}
                   style={{ display: "flex", fontSize: 13, lineHeight: 1.8 }}
                 >
-                  <span style={{ color: "#553344", minWidth: 90 }}>{key}</span>
+                  <span style={{ color: theme.dim, minWidth: 90 }}>{key}</span>
                   {href ? (
                     <a
                       href={href}
                       target={href.startsWith("http") ? "_blank" : undefined}
                       rel="noopener"
-                      style={{ color: "#f0e6d3", textDecoration: "none" }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = "#ff2d55")}
-                      onMouseLeave={(e) => (e.currentTarget.style.color = "#f0e6d3")}
+                      style={{ color: theme.heading, textDecoration: "none" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = theme.accent)}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = theme.heading)}
                     >
                       {value}
                     </a>
                   ) : (
-                    <span style={{ color: "#f0e6d3" }}>{value}</span>
+                    <span style={{ color: theme.heading }}>{value}</span>
                   )}
                 </div>
               ))}
@@ -339,9 +353,9 @@ export function TerminalPage() {
           {/* blinking cursor ----------------------------------- */}
           <Block>
             <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 13 }}>
-              <span style={{ color: "#ff2d55", fontWeight: 700 }}>bettina@portfolio</span>
-              <span style={{ color: "#553344" }}>:~ $</span>
-              <span className="cursor-blink" style={{ color: "#ff2d55", marginLeft: 4 }}>█</span>
+              <span style={{ color: theme.accent, fontWeight: 700 }}>bettina@portfolio</span>
+              <span style={{ color: theme.dim }}>:~ $</span>
+              <span className="cursor-blink" style={{ color: theme.accent, marginLeft: 4 }}>█</span>
             </div>
           </Block>
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTechTheme } from "./TechThemeProvider";
+
 // Icon stream: pure CSS animation. Avoids canvas SVG sizing issues.
 
 const ICON_SIZE = 20;
@@ -22,6 +24,20 @@ const BASE_ICONS = [
   "/img/tech/github.svg",
   "/img/tech/css.svg",
   "/img/tech/html5.svg",
+  "/img/tech/openjdk.svg",
+  "/img/tech/springboot.svg",
+  "/img/tech/apachekafka.svg",
+  "/img/tech/pandas.svg",
+  "/img/tech/numpy.svg",
+  "/img/tech/langchain.svg",
+  "/img/tech/mongodb.svg",
+  "/img/tech/mysql.svg",
+  "/img/tech/supabase.svg",
+  "/img/tech/drizzle.svg",
+  "/img/tech/dbeaver.svg",
+  "/img/tech/jirasoftware.svg",
+  "/img/tech/cypress.svg",
+  "/img/tech/canvas.svg",
 ];
 
 // 20 icons per set — enough to cover ~1000 px viewport height
@@ -41,6 +57,10 @@ const COLS = Array.from({ length: NUM_COLS }, (_, i) => ({
 }));
 
 export function TechIconStream() {
+  const { theme } = useTechTheme();
+  // SVGs default to black fill — invert to white for dark bg, leave black for light bg
+  const iconFilter = theme.name === "dark" ? "brightness(0) invert(1)" : "brightness(0)";
+
   return (
     <div
       aria-hidden="true"
@@ -82,8 +102,7 @@ export function TechIconStream() {
                 height={col.size}
                 style={{
                   display: "block",
-                  // SVGs default to black fill — invert to white so they show on dark bg
-                  filter: "brightness(0) invert(1)",
+                  filter: iconFilter,
                 }}
               />
             ))}

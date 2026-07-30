@@ -1,26 +1,45 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { TechIconStream } from "./TechIconStream";
+import { ThemeToggle } from "./ThemeToggle";
+import { useTechTheme } from "./TechThemeProvider";
+import { accent, shadow, type TechTheme } from "@/lib/tech-theme";
 
 const EXPERIENCE = [
   {
     hash: "a1b2c3d",
-    role: "Software Engineering Intern",
+    role: "Software Engineer Intern 2X",
     company: "Lowe's Tech Hub",
     logo: "/img/companies/lowes.png",
     logoBg: "#ffffff",
-    period: "May – Aug 2025 · Returning 2026",
+    period: "May 2026 – Present",
     isCurrent: true,
     bullets: [
-      "Refurbished a React/TypeScript/FastAPI internal platform through continuous iterations, making it easier for 1.5K+ employees to navigate the Tech Hub office.",
-      "Refined UI components and backend API integrations iteratively based on stakeholder feedback and evolving user stories.",
-      "Used DBeaver to validate PostgreSQL queries and debug schema issues, ensuring data integrity across application workflows.",
-      "Ensured 95%+ test coverage via Cypress for end-to-end and component tests, ensuring consistent feature reliability.",
-      "Operated in Agile sprints with product managers and designers; translated user stories into scalable features.",
+      "Spearheaded adoption of AI-native, specification-driven engineering workflows, enabling AI agents to translate product requirements into technical specifications, implementation plans, and production-ready software.",
+      "Built an agentic SDLC workflow by integrating MCP servers with engineering tools (e.g., Jira, Confluence) and Windsurf, enabling AI agents to leverage organizational context throughout feature development.",
+      "Automated portions of the software development lifecycle by connecting issue tracking, documentation, technical specifications, architecture decisions, and implementation into a unified AI-assisted workflow.",
+      "Developed scalable backend services and event-driven APIs using Java, Spring Boot, MongoDB, and Kafka for Lowe's enterprise quoting platform.",
+      "Authored living technical specifications, architecture decision records (ADRs), and implementation plans that served as the source of truth for both engineers and AI coding agents.",
     ],
-    stack: ["React", "TypeScript", "FastAPI", "PostgreSQL", "Cypress", "DBeaver", "Agile"],
+    stack: ["Java", "Spring Boot", "Kafka", "MongoDB", "MCP", "Windsurf", "Jira", "Confluence"],
+  },
+  {
+    hash: "b7c8d9e",
+    role: "AI Engineering Fellow",
+    company: "CodePath",
+    logo: "/img/companies/codepath.jpeg",
+    logoBg: "#ffffff",
+    period: "May 2026 – Present",
+    isCurrent: true,
+    bullets: [
+      "Built RAG systems, multi-tool agents, content classifiers, and moderation APIs using Python, LangChain, ChromaDB, FastAPI, and LLM APIs.",
+      "Developed AI workflows with vector search, evaluation pipelines, and prompt injection defenses for reliable LLM-powered systems.",
+      "Contributed to production-grade open-source software through pull requests, code reviews, Git workflows, and collaborative development.",
+    ],
+    stack: ["Python", "LangChain", "ChromaDB", "FastAPI", "RAG", "LLM APIs"],
   },
   {
     hash: "b4e5f6a",
@@ -38,7 +57,7 @@ const EXPERIENCE = [
   },
   {
     hash: "c7d8e9f",
-    role: "AI/ML Research Fellow",
+    role: "AI/ML Fellow",
     company: "KPMG + Break Through Tech",
     logo: "/img/companies/kpmg.png",
     logos: [
@@ -51,21 +70,69 @@ const EXPERIENCE = [
       "Selected from 3,000+ applicants for a national AI/ML fellowship, completing 100+ hours of applied machine learning and mentorship.",
       "Analyzed energy/productivity datasets (ML.ENERGY, Harvard/BCG) using Python to identify performance patterns and build baseline models.",
       "Collaborated with KPMG advisors to build scenario simulations that improved baseline performance ~15% and supported energy-efficiency strategy.",
+      "Built and evaluated supervised machine learning models in Python (Pandas, scikit-learn) on real-world productivity and energy datasets.",
+      "Developed an optimization system (NSGA-II) to quantify trade-offs between generative AI productivity gains and energy consumption.",
+      "Analyzed model outputs and translated metrics into actionable insights for stakeholders to support responsible, scalable AI deployment.",
     ],
-    stack: ["Python", "pandas", "NumPy", "Matplotlib", "Seaborn", "scikit-learn"],
+    stack: ["Python", "pandas", "NumPy", "Matplotlib", "Seaborn", "scikit-learn", "NSGA-II"],
   },
   {
     hash: "d1e2f3a",
     role: "Undergraduate Teaching Assistant",
     company: "UNC Dept. of Computer Science · COMP 110",
     logo: "/img/companies/unc.png",
-    period: "Aug 2025 – Present",
-    isCurrent: true,
+    period: "Aug 2025 – May 2026",
+    isCurrent: false,
     bullets: [
       "Selected from 180+ applicants to mentor students in Python, debugging, and software development in an introductory programming course.",
       "Conduct weekly labs and office hours, simplifying complex concepts and improving student success through hands-on guidance.",
+      "Led weekly labs/office hours as a technical point of contact, diagnosing issues and communicating complex concepts under time constraints.",
     ],
     stack: ["Python", "Debugging", "Teaching"],
+  },
+  {
+    hash: "f1e2d3c",
+    role: "Instructional Tech and Design Support",
+    company: "UNC School of Government",
+    logo: "/img/companies/unc.png",
+    period: "Aug 2024 – Mar 2026",
+    isCurrent: false,
+    bullets: [
+      "Engineered scalable digital learning experiences using Canvas LMS, Articulate Rise, HTML/CSS, and Adobe Creative Suite, delivering 30+ interactive modules for 500+ government professionals and adult learners.",
+      "Developed Python-based automation and AI-assisted evaluation workflows to synthesize learner feedback, identify high-impact improvements, and reduce content iteration time by 32% through data-driven decision making.",
+    ],
+    stack: ["Canvas LMS", "Articulate Rise", "HTML/CSS", "Adobe Creative Suite", "Python"],
+  },
+  {
+    hash: "a0b1c2d",
+    role: "Software Engineer Intern",
+    company: "Lowe's Tech Hub",
+    logo: "/img/companies/lowes.png",
+    logoBg: "#ffffff",
+    period: "May 2025 – Jul 2025",
+    isCurrent: false,
+    bullets: [
+      "Refurbished a React + TypeScript + FastAPI web platform through continuous iterations, making it easier for 1.5K+ employees to navigate the Tech Hub office and acclimate quickly.",
+      "Refined UI components and backend API integrations iteratively based on stakeholder feedback and evolving user stories.",
+      "Used DBeaver to validate PostgreSQL queries and debug schema issues, ensuring data integrity across application workflows.",
+      "Ensured 95%+ test coverage via Cypress for end-to-end and component tests, ensuring consistent feature reliability.",
+      "Operated in Agile sprints with product managers and designers; translated user stories into scalable features.",
+    ],
+    stack: ["React", "TypeScript", "FastAPI", "PostgreSQL", "Cypress", "DBeaver", "Agile"],
+  },
+  {
+    hash: "f7a8b9c",
+    role: "Consumer Trends Research Extern",
+    company: "Beats by Dre",
+    logo: "/img/companies/beats.png",
+    logoBg: "#ffffff",
+    period: "Jul – Aug 2024",
+    isCurrent: false,
+    bullets: [
+      "Led end-to-end research on Gen Z audio industry trends, providing actionable insights for product and marketing strategy.",
+      "Automated data collection workflows using Python and presented findings to remote audiences via Tableau and Excel.",
+    ],
+    stack: ["Python", "Tableau", "Excel", "Market Research"],
   },
   {
     hash: "e4f5a6b",
@@ -82,33 +149,19 @@ const EXPERIENCE = [
     ],
     stack: ["Agile", "UI/UX", "HTML/CSS", "User Research", "Canvas LMS"],
   },
-  {
-    hash: "f7a8b9c",
-    role: "Consumer Trends Research Extern",
-    company: "Beats by Dre",
-    logo: "/img/companies/beats.png",
-    logoBg: "#ffffff",
-    period: "Jul – Aug 2024",
-    isCurrent: false,
-    bullets: [
-      "Led end-to-end research on Gen Z audio industry trends, providing actionable insights for product and marketing strategy.",
-      "Automated data collection workflows using Python and presented findings to remote audiences via Tableau and Excel.",
-    ],
-    stack: ["Python", "Tableau", "Excel", "Market Research"],
-  },
 ];
 
-function Tag({ label }: { label: string }) {
+function Tag({ label, theme }: { label: string; theme: TechTheme }) {
   return (
     <span
       style={{
         fontSize: 11,
         padding: "3px 10px",
-        border: "1px solid rgba(255,45,85,0.2)",
-        color: "#c4a882",
+        border: `1px solid ${accent(theme, 0.2)}`,
+        color: theme.body,
         borderRadius: 3,
         whiteSpace: "nowrap",
-        background: "rgba(255,45,85,0.04)",
+        background: accent(theme, 0.04),
         fontFamily: "inherit",
       }}
     >
@@ -121,10 +174,12 @@ function RoadmapCard({
   exp,
   index,
   isLast,
+  theme,
 }: {
   exp: typeof EXPERIENCE[0];
   index: number;
   isLast: boolean;
+  theme: TechTheme;
 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -143,6 +198,11 @@ function RoadmapCard({
     x.set(0);
     y.set(0);
   };
+
+  const [expanded, setExpanded] = useState(false);
+  const VISIBLE_BULLETS = 2;
+  const hasMore = exp.bullets.length > VISIBLE_BULLETS;
+  const visibleBullets = expanded ? exp.bullets : exp.bullets.slice(0, VISIBLE_BULLETS);
 
   return (
     <div style={{ position: "relative", display: "flex", gap: 0, paddingBottom: isLast ? 0 : 12 }}>
@@ -163,7 +223,7 @@ function RoadmapCard({
               top: 28,
               bottom: -12,
               width: 1,
-              background: "linear-gradient(to bottom, rgba(255,45,85,0.4), rgba(255,45,85,0.1))",
+              background: `linear-gradient(to bottom, ${accent(theme, 0.4)}, ${accent(theme, 0.1)})`,
               transformOrigin: "top",
             }}
           />
@@ -182,10 +242,10 @@ function RoadmapCard({
             width: 16,
             height: 16,
             borderRadius: "50%",
-            background: exp.isCurrent ? "#ff2d55" : "#0a0003",
-            border: `1.5px solid ${exp.isCurrent ? "#ff2d55" : "rgba(255,45,85,0.35)"}`,
+            background: exp.isCurrent ? theme.accent : theme.pageBg,
+            border: `1.5px solid ${exp.isCurrent ? theme.accent : accent(theme, 0.35)}`,
             boxShadow: exp.isCurrent
-              ? "0 0 0 4px rgba(255,45,85,0.12), 0 0 16px rgba(255,45,85,0.45)"
+              ? `0 0 0 4px ${accent(theme, 0.12)}, 0 0 16px ${accent(theme, 0.45)}`
               : "none",
             zIndex: 2,
           }}
@@ -198,7 +258,7 @@ function RoadmapCard({
             left: 0,
             top: 42,
             fontSize: 9,
-            color: "#ff6b35",
+            color: theme.hash,
             opacity: 0.65,
             letterSpacing: "0.02em",
             fontFamily: "inherit",
@@ -232,15 +292,16 @@ function RoadmapCard({
             position: "relative",
             borderRadius: 14,
             padding: "22px 26px",
+            minHeight: 190,
             overflow: "hidden",
-            background: "rgba(20, 0, 10, 0.55)",
+            background: theme.glassCardBg,
             backdropFilter: "blur(18px)",
             WebkitBackdropFilter: "blur(18px)",
-            border: `1px solid ${exp.isCurrent ? "rgba(255,45,85,0.22)" : "rgba(255,45,85,0.1)"}`,
+            border: `1px solid ${exp.isCurrent ? accent(theme, 0.22) : accent(theme, 0.1)}`,
             boxShadow:
-              "0 8px 40px rgba(0,0,0,0.4), " +
-              "0 1px 0 rgba(255,45,85,0.15) inset, " +
-              "0 -1px 0 rgba(0,0,0,0.4) inset",
+              `0 8px 40px ${shadow(theme, 0.4)}, ` +
+              `0 1px 0 ${accent(theme, 0.15)} inset, ` +
+              `0 -1px 0 ${shadow(theme, 0.4)} inset`,
           }}
         >
           {/* shimmer */}
@@ -253,7 +314,7 @@ function RoadmapCard({
               background: useTransform(
                 [shimmerX, shimmerY],
                 ([sx, sy]) =>
-                  `radial-gradient(circle at ${sx}% ${sy}%, rgba(255,45,85,0.07) 0%, transparent 60%)`
+                  `radial-gradient(circle at ${sx}% ${sy}%, ${accent(theme, 0.07)} 0%, transparent 60%)`
               ),
             }}
           />
@@ -266,7 +327,7 @@ function RoadmapCard({
               left: "15%",
               right: "15%",
               height: 1,
-              background: `linear-gradient(90deg, transparent, ${exp.isCurrent ? "rgba(255,45,85,0.6)" : "rgba(255,45,85,0.3)"}, transparent)`,
+              background: `linear-gradient(90deg, transparent, ${exp.isCurrent ? accent(theme, 0.6) : accent(theme, 0.3)}, transparent)`,
             }}
           />
 
@@ -279,7 +340,7 @@ function RoadmapCard({
               width: 100,
               height: 100,
               borderRadius: "50%",
-              background: "rgba(255,45,85,0.04)",
+              background: accent(theme, 0.04),
               filter: "blur(24px)",
               pointerEvents: "none",
             }}
@@ -291,30 +352,52 @@ function RoadmapCard({
               <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                 {/* company logo(s) */}
                 <div style={{ display: "flex", gap: 4, flexShrink: 0, marginTop: 2 }}>
-                  {(exp.logos ?? [{ src: exp.logo, bg: exp.logoBg }]).map((l, li) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={li}
-                      src={l.src}
-                      alt={exp.company}
-                      width={36}
-                      height={36}
-                      style={{
-                        borderRadius: 8,
-                        objectFit: "contain",
-                        background: l.bg ?? "rgba(255,255,255,0.06)",
-                        padding: 4,
-                      }}
-                    />
-                  ))}
+                  {(exp.logos ?? [{ src: exp.logo, bg: exp.logoBg }]).map((l, li) =>
+                    l.src ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={li}
+                        src={l.src}
+                        alt={exp.company}
+                        width={36}
+                        height={36}
+                        style={{
+                          borderRadius: 8,
+                          objectFit: "contain",
+                          background: l.bg ?? "rgba(255,255,255,0.06)",
+                          padding: 4,
+                        }}
+                      />
+                    ) : (
+                      <div
+                        key={li}
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: 8,
+                          background: accent(theme, 0.1),
+                          border: `1px solid ${accent(theme, 0.2)}`,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: theme.accent,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {exp.company.charAt(0)}
+                      </div>
+                    )
+                  )}
                 </div>
                 <div>
                   {exp.isCurrent && (
                     <span
                       style={{
                         fontSize: 9,
-                        color: "#ff2d55",
-                        border: "1px solid rgba(255,45,85,0.4)",
+                        color: theme.accent,
+                        border: `1px solid ${accent(theme, 0.4)}`,
                         padding: "1px 6px",
                         borderRadius: 2,
                         letterSpacing: "0.1em",
@@ -325,40 +408,123 @@ function RoadmapCard({
                       CURRENT
                     </span>
                   )}
-                  <h2 style={{ fontSize: 14, fontWeight: 700, color: "#ff2d55", margin: "4px 0 2px" }}>
+                  <h2 style={{ fontSize: 14, fontWeight: 700, color: theme.accent, margin: "4px 0 2px" }}>
                     {exp.role}
                   </h2>
-                  <p style={{ fontSize: 12, color: "#c4a882", margin: 0 }}>{exp.company}</p>
+                  <p style={{ fontSize: 12, color: theme.body, margin: 0 }}>{exp.company}</p>
                 </div>
               </div>
-              <span style={{ fontSize: 11, color: "#3d1a28", flexShrink: 0, paddingTop: 2 }}>
+              <span style={{ fontSize: 11, color: theme.faint, flexShrink: 0, paddingTop: 2 }}>
                 {exp.period}
               </span>
             </div>
 
             {/* bullets */}
-            <ul style={{ margin: "12px 0 14px", padding: 0, listStyle: "none" }}>
-              {exp.bullets.map((b, i) => (
-                <li
-                  key={i}
+            <div style={{ position: "relative", marginBottom: 14 }}>
+              <ul style={{ margin: "12px 0 0", padding: 0, listStyle: "none" }}>
+                {visibleBullets.map((b, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      fontSize: 12,
+                      color: theme.body,
+                      lineHeight: 1.7,
+                      paddingLeft: 14,
+                      position: "relative",
+                      marginBottom: 4,
+                    }}
+                  >
+                    <span style={{ position: "absolute", left: 0, color: theme.dim }}>›</span>
+                    {b}
+                  </li>
+                ))}
+              </ul>
+
+              {/* fade cue signaling truncated content */}
+              {hasMore && !expanded && (
+                <div
                   style={{
-                    fontSize: 12,
-                    color: "#c4a882",
-                    lineHeight: 1.7,
-                    paddingLeft: 14,
-                    position: "relative",
-                    marginBottom: 4,
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    height: 30,
+                    background: `linear-gradient(to bottom, transparent, ${theme.panelBg})`,
+                    pointerEvents: "none",
+                  }}
+                />
+              )}
+            </div>
+
+            {/* tags row + expand/collapse arrow, same line */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {exp.stack.map((t) => <Tag key={t} label={t} theme={theme} />)}
+              </div>
+
+              {hasMore && (
+                <button
+                  onClick={() => setExpanded((v) => !v)}
+                  aria-label={expanded ? "show less" : "show more"}
+                  style={{
+                    flexShrink: 0,
+                    width: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "none",
+                    border: "none",
+                    color: theme.accent,
+                    fontSize: 20,
+                    fontWeight: 700,
+                    boxShadow: "none",
+                    transition: "box-shadow 0.2s, background 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = accent(theme, 0.1);
+                    e.currentTarget.style.boxShadow = `0 0 0 6px ${accent(theme, 0.1)}`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "none";
+                    e.currentTarget.style.boxShadow = "none";
                   }}
                 >
-                  <span style={{ position: "absolute", left: 0, color: "#553344" }}>›</span>
-                  {b}
-                </li>
-              ))}
-            </ul>
-
-            {/* tags */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {exp.stack.map((t) => <Tag key={t} label={t} />)}
+                  {expanded ? (
+                    "↑"
+                  ) : (
+                    <span style={{ position: "relative", width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <motion.span
+                        animate={{ y: [0, 4, 0] }}
+                        transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                        style={{ display: "inline-block", position: "relative", zIndex: 1 }}
+                      >
+                        ↓
+                      </motion.span>
+                      <motion.span
+                        aria-hidden="true"
+                        animate={{ opacity: [0.3, 0.9, 0.3], scaleX: [0.5, 1.15, 0.5] }}
+                        transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                        style={{
+                          position: "absolute",
+                          bottom: -2,
+                          left: 0,
+                          right: 0,
+                          margin: "0 auto",
+                          width: 22,
+                          height: 7,
+                          borderRadius: "50%",
+                          background: theme.accent,
+                          filter: "blur(4px)",
+                          zIndex: 0,
+                          pointerEvents: "none",
+                        }}
+                      />
+                    </span>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -369,14 +535,16 @@ function RoadmapCard({
 
 export function ExperiencePage() {
   const router = useRouter();
+  const { theme } = useTechTheme();
 
   return (
     <div
       style={{
-        background: "#0a0003",
+        background: theme.pageBg,
         minHeight: "100vh",
         position: "relative",
         fontFamily: "var(--font-jetbrains-mono), 'JetBrains Mono', monospace",
+        transition: "background 0.3s",
       }}
     >
       <TechIconStream />
@@ -388,33 +556,36 @@ export function ExperiencePage() {
           maxWidth: 820,
           margin: "0 auto",
           minHeight: "100vh",
-          background: "#0f0008",
-          borderLeft: "1px solid rgba(255,45,85,0.1)",
-          borderRight: "1px solid rgba(255,45,85,0.1)",
-          boxShadow:
-            "0 0 0 1px rgba(255,45,85,0.04), -40px 0 120px rgba(0,0,0,0.6), 40px 0 120px rgba(0,0,0,0.6)",
+          background: theme.panelBg,
+          borderLeft: `1px solid ${accent(theme, 0.1)}`,
+          borderRight: `1px solid ${accent(theme, 0.1)}`,
+          boxShadow: `0 0 0 1px ${accent(theme, 0.04)}, -40px 0 120px ${shadow(theme, 0.6)}, 40px 0 120px ${shadow(theme, 0.6)}`,
+          transition: "background 0.3s",
         }}
       >
         {/* chrome */}
-        <div style={{ position: "sticky", top: 0, zIndex: 50, background: "#1a0810", borderBottom: "1px solid #2d0a18" }}>
+        <div style={{ position: "sticky", top: 0, zIndex: 50, background: theme.chromeBg, borderBottom: `1px solid ${theme.chromeBorder}`, transition: "background 0.3s, border-color 0.3s" }}>
           <div style={{ display: "flex", alignItems: "center", height: 42, padding: "0 20px", gap: 8 }}>
             <button
               onClick={() => router.push("/")}
-              style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f57", border: "none", cursor: "pointer" }}
+              style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f57", border: "none", cursor: "default" }}
             />
             <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#febc2e", display: "inline-block" }} />
             <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#28c840", display: "inline-block" }} />
-            <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#3d1a28", userSelect: "none" }}>
+            <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: theme.faint, userSelect: "none" }}>
               bettina@portfolio — ~/experience
             </div>
-            <button
-              onClick={() => router.push("/tech")}
-              style={{ fontSize: 11, color: "#3d1a28", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ff2d55")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#3d1a28")}
-            >
-              ← cd ..
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <button
+                onClick={() => router.push("/tech")}
+                style={{ fontSize: 11, color: theme.faint, background: "none", border: "none", cursor: "default", fontFamily: "inherit" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = theme.accent)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = theme.faint)}
+              >
+                ← cd ..
+              </button>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
 
@@ -428,13 +599,13 @@ export function ExperiencePage() {
             transition={{ duration: 0.4 }}
             style={{ marginBottom: 52 }}
           >
-            <p style={{ fontSize: 12, color: "#553344", letterSpacing: "0.2em", marginBottom: 8 }}>
+            <p style={{ fontSize: 12, color: theme.dim, letterSpacing: "0.2em", marginBottom: 8 }}>
               # CAREER
             </p>
-            <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", fontWeight: 700, color: "#f0e6d3", lineHeight: 1, marginBottom: 14 }}>
+            <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", fontWeight: 700, color: theme.heading, lineHeight: 1, marginBottom: 14 }}>
               experience
             </h1>
-            <p style={{ fontSize: 13, color: "#3d1a28", fontStyle: "italic" }}>
+            <p style={{ fontSize: 13, color: theme.faint, fontStyle: "italic" }}>
               $ git log --career --oneline
             </p>
           </motion.div>
@@ -447,15 +618,16 @@ export function ExperiencePage() {
                 exp={exp}
                 index={i}
                 isLast={i === EXPERIENCE.length - 1}
+                theme={theme}
               />
             ))}
           </div>
 
           {/* prompt */}
           <div style={{ marginTop: 56, display: "flex", alignItems: "center", gap: 4, fontSize: 13, paddingLeft: 56 }}>
-            <span style={{ color: "#ff2d55", fontWeight: 700 }}>bettina@portfolio</span>
-            <span style={{ color: "#553344" }}>:~/experience $</span>
-            <span className="cursor-blink" style={{ color: "#ff2d55", marginLeft: 4 }}>█</span>
+            <span style={{ color: theme.accent, fontWeight: 700 }}>bettina@portfolio</span>
+            <span style={{ color: theme.dim }}>:~/experience $</span>
+            <span className="cursor-blink" style={{ color: theme.accent, marginLeft: 4 }}>█</span>
           </div>
         </div>
       </div>

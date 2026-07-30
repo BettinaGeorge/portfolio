@@ -3,10 +3,24 @@
 import { useRouter } from "next/navigation";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { TechIconStream } from "./TechIconStream";
+import { ThemeToggle } from "./ThemeToggle";
+import { useTechTheme } from "./TechThemeProvider";
+import { accent, shadow, type TechTheme } from "@/lib/tech-theme";
 
 const PROJECTS = [
   {
     num: "01",
+    name: "ContextOS",
+    context: "AI Developer Platform",
+    description:
+      "AI-native platform connecting GitHub and Notion to help developers understand codebases through evidence-backed, source-cited retrieval. RAG pipeline built with PostgreSQL/pgvector and Voyage embeddings, with prompt-injection defense and abstention. Modular connector framework in FastAPI, Next.js, and Supabase supporting Jira, Figma, and Slack integrations.",
+    stack: ["FastAPI", "Next.js", "TypeScript", "PostgreSQL", "pgvector", "Supabase"],
+    github: null,
+    link: null,
+    linkLabel: null,
+  },
+  {
+    num: "02",
     name: "Quiet Table",
     context: "Pearl Hacks 2026 · 🏆 1st Place",
     description:
@@ -17,18 +31,18 @@ const PROJECTS = [
     linkLabel: null,
   },
   {
-    num: "02",
-    name: "AI Creator Content Intelligence Platform",
-    context: "Full-Stack · AI",
+    num: "03",
+    name: "CreatorOS",
+    context: "AI Creator Content Intelligence Platform · Full-Stack · AI",
     description:
-      "Full-stack platform analyzing Instagram Reel performance to guide content strategy. Pluggable ingestion layer into PostgreSQL. Anthropic Claude powering hooks, briefs, trend scouting, and strategy insights via live analytics context.",
+      "Full-stack platform analyzing Instagram Reel performance to guide content strategy. Pluggable ingestion layer parsing Instagram Reel JSON exports into PostgreSQL, enabling a swap to the Instagram Graph API. Anthropic Claude powering hooks, briefs, trend scouting, and strategy insights via live analytics context.",
     stack: ["FastAPI", "Next.js", "TypeScript", "PostgreSQL", "Anthropic Claude"],
     github: "https://github.com/BettinaGeorge/creator-dashboard",
     link: null,
     linkLabel: null,
   },
   {
-    num: "03",
+    num: "04",
     name: "Duolingo Watch Feature",
     context: "APM · Duolingo Thrive Recruitment 2025",
     description:
@@ -39,40 +53,40 @@ const PROJECTS = [
     linkLabel: "demo →",
   },
   {
-    num: "04",
+    num: "05",
     name: "De-Impact Web App",
     context: "JP Morgan Code for Good Hackathon 2024",
     description:
-      "Built with 6 engineers — connects civilians with NGOs via skill/interest-based matching. Designed UI in Figma, implemented frontend in React/TypeScript/Tailwind, and assisted in a 60% compatibility matching algorithm.",
+      "Built with 6 engineers — connects civilians with NGOs via skill/interest-based matching. Designed UI in Figma, implemented frontend in React/TypeScript/Tailwind, and assisted in a 60% compatibility matching algorithm, boosting demo engagement by 25%.",
     stack: ["React.js", "TypeScript", "Tailwind CSS", "Java", "Spring Boot", "MySQL", "Figma"],
     github: null,
     link: "https://www.youtube.com/watch?v=EJdtZWzPUoc",
     linkLabel: "demo →",
   },
   {
-    num: "05",
+    num: "06",
     name: "Diaspora Duo App",
     context: "Pearl Hacks 2024 · Best DEI Hack · Best Use of AI",
     description:
-      "Led product ideation and UI/UX for an AI-driven web app supporting immigrant transitions through personalized recommendations via LLM-powered Flask APIs. Awarded Best DEI Hack by Fidelity and Best Use of AI by Infosys among 70+ teams.",
-    stack: ["Python", "Flask", "LLMs", "Figma"],
+      "Led product ideation and UI/UX for an AI-driven web app supporting immigrant transitions through personalized recommendations via LLM-powered Flask APIs using OpenAI's API. Awarded Best DEI Hack by Fidelity and Best Use of AI by Infosys among 70+ teams.",
+    stack: ["Python", "Flask", "LLMs", "OpenAI API", "Figma"],
     github: "https://github.com/BettinaGeorge/Diaspora-Duo-----Pearl-Hacks-Project",
     link: "https://devpost.com/software/diaspora-duo",
     linkLabel: "devpost →",
   },
 ];
 
-function Tag({ label }: { label: string }) {
+function Tag({ label, theme }: { label: string; theme: TechTheme }) {
   return (
     <span
       style={{
         fontSize: 11,
         padding: "3px 10px",
-        border: "1px solid rgba(255,45,85,0.2)",
-        color: "#c4a882",
+        border: `1px solid ${accent(theme, 0.2)}`,
+        color: theme.body,
         borderRadius: 3,
         whiteSpace: "nowrap",
-        background: "rgba(255,45,85,0.04)",
+        background: accent(theme, 0.04),
         fontFamily: "inherit",
       }}
     >
@@ -81,7 +95,7 @@ function Tag({ label }: { label: string }) {
   );
 }
 
-function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: number }) {
+function GlassCard({ project, index, theme }: { project: typeof PROJECTS[0]; index: number; theme: TechTheme }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-0.5, 0.5], [7, -7]);
@@ -99,6 +113,8 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
     x.set(0);
     y.set(0);
   };
+
+  const githubIconFilter = theme.name === "dark" ? "brightness(0) invert(1)" : "brightness(0)";
 
   return (
     <motion.div
@@ -123,14 +139,14 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
           borderRadius: 14,
           padding: "28px 30px",
           overflow: "hidden",
-          background: "rgba(20, 0, 10, 0.55)",
+          background: theme.glassCardBg,
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
-          border: "1px solid rgba(255, 45, 85, 0.14)",
+          border: `1px solid ${accent(theme, 0.14)}`,
           boxShadow:
-            "0 8px 40px rgba(0,0,0,0.45), " +
-            "0 1px 0 rgba(255,45,85,0.18) inset, " +
-            "0 -1px 0 rgba(0,0,0,0.4) inset",
+            `0 8px 40px ${shadow(theme, 0.45)}, ` +
+            `0 1px 0 ${accent(theme, 0.18)} inset, ` +
+            `0 -1px 0 ${shadow(theme, 0.4)} inset`,
         }}
       >
         {/* moving shimmer highlight that follows mouse */}
@@ -143,7 +159,7 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
             background: useTransform(
               [shimmerX, shimmerY],
               ([sx, sy]) =>
-                `radial-gradient(circle at ${sx}% ${sy}%, rgba(255,45,85,0.07) 0%, transparent 60%)`
+                `radial-gradient(circle at ${sx}% ${sy}%, ${accent(theme, 0.07)} 0%, transparent 60%)`
             ),
           }}
         />
@@ -156,7 +172,7 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
             left: "15%",
             right: "15%",
             height: 1,
-            background: "linear-gradient(90deg, transparent, rgba(255,45,85,0.5), transparent)",
+            background: `linear-gradient(90deg, transparent, ${accent(theme, 0.5)}, transparent)`,
             borderRadius: 1,
           }}
         />
@@ -170,7 +186,7 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
             width: 130,
             height: 130,
             borderRadius: "50%",
-            background: "rgba(255,45,85,0.05)",
+            background: accent(theme, 0.05),
             filter: "blur(30px)",
             pointerEvents: "none",
           }}
@@ -181,8 +197,8 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
           {/* top row: number + name + icons */}
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-              <span style={{ fontSize: 11, color: "#3d1a28", flexShrink: 0 }}>{project.num}</span>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: "#ff2d55", margin: 0, lineHeight: 1.3 }}>
+              <span style={{ fontSize: 11, color: theme.faint, flexShrink: 0 }}>{project.num}</span>
+              <h2 style={{ fontSize: 15, fontWeight: 700, color: theme.accent, margin: 0, lineHeight: 1.3 }}>
                 {project.name}
               </h2>
             </div>
@@ -205,7 +221,7 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
                     alt="GitHub"
                     width={16}
                     height={16}
-                    style={{ filter: "brightness(0) invert(1)" }}
+                    style={{ filter: githubIconFilter }}
                   />
                 </a>
               )}
@@ -214,9 +230,9 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
                   href={project.link}
                   target="_blank"
                   rel="noopener"
-                  style={{ fontSize: 11, color: "#553344", textDecoration: "none", transition: "color 0.2s" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#ff2d55")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#553344")}
+                  style={{ fontSize: 11, color: theme.dim, textDecoration: "none", transition: "color 0.2s" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = theme.accent)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = theme.dim)}
                 >
                   {project.linkLabel}
                 </a>
@@ -225,18 +241,18 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
           </div>
 
           {/* context */}
-          <p style={{ fontSize: 11, color: "#553344", marginBottom: 12, letterSpacing: "0.06em" }}>
+          <p style={{ fontSize: 11, color: theme.dim, marginBottom: 12, letterSpacing: "0.06em" }}>
             {project.context}
           </p>
 
           {/* description */}
-          <p style={{ fontSize: 13, color: "#c4a882", lineHeight: 1.75, marginBottom: 18 }}>
+          <p style={{ fontSize: 13, color: theme.body, lineHeight: 1.75, marginBottom: 18 }}>
             {project.description}
           </p>
 
           {/* tech tags */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {project.stack.map((t) => <Tag key={t} label={t} />)}
+            {project.stack.map((t) => <Tag key={t} label={t} theme={theme} />)}
           </div>
         </div>
       </div>
@@ -246,14 +262,16 @@ function GlassCard({ project, index }: { project: typeof PROJECTS[0]; index: num
 
 export function ProjectsPage() {
   const router = useRouter();
+  const { theme } = useTechTheme();
 
   return (
     <div
       style={{
-        background: "#0a0003",
+        background: theme.pageBg,
         minHeight: "100vh",
         position: "relative",
         fontFamily: "var(--font-jetbrains-mono), 'JetBrains Mono', monospace",
+        transition: "background 0.3s",
       }}
     >
       <TechIconStream />
@@ -266,36 +284,39 @@ export function ProjectsPage() {
           maxWidth: 820,
           margin: "0 auto",
           minHeight: "100vh",
-          background: "#0f0008",
-          borderLeft: "1px solid rgba(255,45,85,0.1)",
-          borderRight: "1px solid rgba(255,45,85,0.1)",
-          boxShadow:
-            "0 0 0 1px rgba(255,45,85,0.04), -40px 0 120px rgba(0,0,0,0.6), 40px 0 120px rgba(0,0,0,0.6)",
+          background: theme.panelBg,
+          borderLeft: `1px solid ${accent(theme, 0.1)}`,
+          borderRight: `1px solid ${accent(theme, 0.1)}`,
+          boxShadow: `0 0 0 1px ${accent(theme, 0.04)}, -40px 0 120px ${shadow(theme, 0.6)}, 40px 0 120px ${shadow(theme, 0.6)}`,
+          transition: "background 0.3s",
         }}
       >
         {/* window chrome */}
-        <div style={{ position: "sticky", top: 0, zIndex: 50, background: "#1a0810", borderBottom: "1px solid #2d0a18" }}>
+        <div style={{ position: "sticky", top: 0, zIndex: 50, background: theme.chromeBg, borderBottom: `1px solid ${theme.chromeBorder}`, transition: "background 0.3s, border-color 0.3s" }}>
           <div style={{ display: "flex", alignItems: "center", height: 42, padding: "0 20px", gap: 8 }}>
             <button
               onClick={() => router.push("/")}
               title="back to home"
-              style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f57", border: "none", cursor: "pointer" }}
+              style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f57", border: "none", cursor: "default" }}
             />
             <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#febc2e", display: "inline-block" }} />
             <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#28c840", display: "inline-block" }} />
 
-            <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: "#3d1a28", userSelect: "none" }}>
+            <div style={{ flex: 1, textAlign: "center", fontSize: 12, color: theme.faint, userSelect: "none" }}>
               bettina@portfolio — ~/projects
             </div>
 
-            <button
-              onClick={() => router.push("/tech")}
-              style={{ fontSize: 11, color: "#3d1a28", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", transition: "color 0.2s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ff2d55")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#3d1a28")}
-            >
-              ← cd ..
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <button
+                onClick={() => router.push("/tech")}
+                style={{ fontSize: 11, color: theme.faint, background: "none", border: "none", cursor: "default", fontFamily: "inherit", transition: "color 0.2s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = theme.accent)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = theme.faint)}
+              >
+                ← cd ..
+              </button>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
 
@@ -309,13 +330,13 @@ export function ProjectsPage() {
             transition={{ duration: 0.4 }}
             style={{ marginBottom: 48 }}
           >
-            <p style={{ fontSize: 12, color: "#553344", letterSpacing: "0.2em", marginBottom: 8 }}>
+            <p style={{ fontSize: 12, color: theme.dim, letterSpacing: "0.2em", marginBottom: 8 }}>
               # WORK
             </p>
-            <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", fontWeight: 700, color: "#f0e6d3", lineHeight: 1, marginBottom: 14 }}>
+            <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", fontWeight: 700, color: theme.heading, lineHeight: 1, marginBottom: 14 }}>
               projects
             </h1>
-            <p style={{ fontSize: 13, color: "#3d1a28", fontStyle: "italic" }}>
+            <p style={{ fontSize: 13, color: theme.faint, fontStyle: "italic" }}>
               // things I&apos;ve built, trained, shipped, or broken
             </p>
           </motion.div>
@@ -323,15 +344,15 @@ export function ProjectsPage() {
           {/* cards */}
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {PROJECTS.map((p, i) => (
-              <GlassCard key={p.num} project={p} index={i} />
+              <GlassCard key={p.num} project={p} index={i} theme={theme} />
             ))}
           </div>
 
           {/* final prompt */}
           <div style={{ marginTop: 56, display: "flex", alignItems: "center", gap: 4, fontSize: 13 }}>
-            <span style={{ color: "#ff2d55", fontWeight: 700 }}>bettina@portfolio</span>
-            <span style={{ color: "#553344" }}>:~/projects $</span>
-            <span className="cursor-blink" style={{ color: "#ff2d55", marginLeft: 4 }}>█</span>
+            <span style={{ color: theme.accent, fontWeight: 700 }}>bettina@portfolio</span>
+            <span style={{ color: theme.dim }}>:~/projects $</span>
+            <span className="cursor-blink" style={{ color: theme.accent, marginLeft: 4 }}>█</span>
           </div>
         </div>
       </div>
