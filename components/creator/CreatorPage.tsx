@@ -133,33 +133,40 @@ const TESTIMONIALS = [
     quote:
       "Thank you so much for your patience whilst I've been OOO, and for sending your content through — it looks beautiful! Your content for the Michael Kors Pour Femme “Make Your Entrance” Campaign is now officially approved, and you're all set to go live.",
     source: "Michael Kors Pour Femme Campaign",
+    proof: "/img/testimonials/t2-mk-approved-livegoal.png",
   },
   {
     quote:
       "We're excited to invite you to be part of the Michael Kors Pour Femme “Make Your Entrance” Campaign. We've been loving your content and would be thrilled to have you showcase the Michael Kors fragrance collection in your own authentic style.",
     source: "Michael Kors Brand Team",
+    proof: "/img/testimonials/t3-mk-invite.png",
   },
   {
     quote:
       "Obviously, a partner agency for Vaseline®. We love your style and would be thrilled to invite you to an exclusive gifted campaign!",
     source: "Vaseline Partner Agency",
+    proof: "/img/testimonials/t4-vaseline-invite.png",
   },
   {
     quote:
       "I'm so happy you were accepted, I peeked around and let me just say I LOVE your content! I'm really excited to work with you and I hope you feel the same!",
     source: "Campaign Manager",
+    proof: "/img/testimonials/t5-so-happy-accepted.png",
   },
   {
     quote: "we love your content bettina!!!!",
     source: "Instagram DM",
+    proof: "/img/testimonials/t6-ig-love-content.png",
   },
   {
     quote: "Naw we need more Nigerian influencers making good content!",
     source: "@sprite_aholic, Instagram",
+    proof: "/img/testimonials/t7-sprite-aholic.png",
   },
   {
     quote: "you make peak contents!",
     source: "Instagram DM",
+    proof: "/img/testimonials/t8-peak-contents.png",
   },
 ];
 
@@ -770,7 +777,19 @@ function BundleCard() {
   );
 }
 
-function TestimonialCard({ quote, source, index }: { quote: string; source: string; index: number }) {
+function TestimonialCard({
+  quote,
+  source,
+  proof,
+  index,
+  onSeeProof,
+}: {
+  quote: string;
+  source: string;
+  proof?: string;
+  index: number;
+  onSeeProof: (proof: string) => void;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -804,17 +823,125 @@ function TestimonialCard({ quote, source, index }: { quote: string; source: stri
       >
         {quote}
       </p>
-      <p
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <p
+          style={{
+            fontFamily: SANS,
+            fontSize: 10,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: C.muted,
+          }}
+        >
+          — {source}
+        </p>
+        {proof && (
+          <button
+            onClick={() => onSeeProof(proof)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 5,
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              color: C.crimson,
+              fontFamily: SANS,
+              fontSize: 9,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              opacity: 0.85,
+              transition: "opacity 0.2s",
+              whiteSpace: "nowrap",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.85")}
+          >
+            <ReceiptIcon size={11} />
+            See proof
+          </button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+function ProofLightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 1000,
+        background: "rgba(6,2,4,0.92)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "60px 24px",
+        cursor: "zoom-out",
+      }}
+    >
+      <button
+        onClick={onClose}
+        aria-label="Close"
         style={{
-          fontFamily: SANS,
-          fontSize: 10,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: C.muted,
+          position: "fixed",
+          top: 20,
+          right: 20,
+          zIndex: 1001,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          border: `1px solid ${C.border}`,
+          background: "rgba(13,4,7,0.85)",
+          color: C.cream,
+          cursor: "pointer",
         }}
       >
-        — {source}
-      </p>
+        ✕
+      </button>
+      <motion.img
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        src={src}
+        alt="Testimonial proof"
+        style={{
+          maxWidth: "min(92vw, 560px)",
+          maxHeight: "82vh",
+          width: "auto",
+          height: "auto",
+          objectFit: "contain",
+          borderRadius: 8,
+          border: `1px solid ${C.border}`,
+          cursor: "default",
+        }}
+      />
     </motion.div>
   );
 }
@@ -1139,6 +1266,7 @@ function ReelsGrid() {
 /* ─── main page ────────────────────────────────────────────────────────── */
 export function CreatorPage() {
   const router = useRouter();
+  const [proofImage, setProofImage] = useState<string | null>(null);
 
   return (
     <div
@@ -1576,9 +1704,20 @@ export function CreatorPage() {
           }}
         >
           {TESTIMONIALS.map((t, i) => (
-            <TestimonialCard key={i} quote={t.quote} source={t.source} index={i} />
+            <TestimonialCard
+              key={i}
+              quote={t.quote}
+              source={t.source}
+              proof={t.proof}
+              index={i}
+              onSeeProof={setProofImage}
+            />
           ))}
         </div>
+
+        <AnimatePresence>
+          {proofImage && <ProofLightbox src={proofImage} onClose={() => setProofImage(null)} />}
+        </AnimatePresence>
       </section>
 
       <Rule />
