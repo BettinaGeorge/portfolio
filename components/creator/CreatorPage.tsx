@@ -128,6 +128,7 @@ const TESTIMONIALS = [
     quote:
       "Thank you so much again for all the effort and creativity you put into your campaign content! Glad to see your video is doing so well and getting people talking about Michael Kors.",
     source: "Michael Kors Campaign Team",
+    proof: "/img/testimonials/t1-mk-effort-creativity.png",
   },
   {
     quote:
@@ -167,6 +168,18 @@ const TESTIMONIALS = [
     quote: "you make peak contents!",
     source: "Instagram DM",
     proof: "/img/testimonials/t8-peak-contents.png",
+  },
+  {
+    quote:
+      "Thanks again for being part of this campaign — we've loved working together and hope to collaborate again soon!",
+    source: "Campaign Team",
+    proof: "/img/testimonials/t9-thanks-campaign.png",
+  },
+  {
+    quote:
+      "It's been lovely working with you and we will certainly keep you in mind for future collaboration opportunities!",
+    source: "Brand Partner",
+    proof: "/img/testimonials/t10-keep-in-mind.png",
   },
 ];
 
