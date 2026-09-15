@@ -15,7 +15,7 @@ const PROJECTS = [
     description:
       "AI-native platform connecting GitHub and Notion to help developers understand codebases through evidence-backed, source-cited retrieval. RAG pipeline built with PostgreSQL/pgvector and Voyage embeddings, with prompt-injection defense and abstention. Modular connector framework in FastAPI, Next.js, and Supabase supporting Jira, Figma, and Slack integrations.",
     stack: ["FastAPI", "Next.js", "TypeScript", "PostgreSQL", "pgvector", "Supabase"],
-    github: null,
+    github: "https://github.com/BettinaGeorge/ContextOS",
     link: null,
     linkLabel: null,
   },
@@ -26,7 +26,7 @@ const PROJECTS = [
     description:
       "Privacy-first, real-time dining connection app with ephemeral, no-profile interactions. Geospatial proximity matching via MongoDB 2dsphere + Google Maps API, Gemini-powered icebreakers.",
     stack: ["Next.js", "TypeScript", "Node.js", "Express", "MongoDB", "Gemini AI"],
-    github: "https://github.com/betsygeo/quiet-table",
+    github: "https://github.com/BettinaGeorge/quiet-table",
     link: null,
     linkLabel: null,
   },

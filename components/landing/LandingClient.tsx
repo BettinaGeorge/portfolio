@@ -68,7 +68,7 @@ export function LandingClient() {
                 className="px-7 py-2.5 text-xs tracking-[0.25em] uppercase border text-[#ff2d55] border-[#ff2d55]/40 hover:bg-[#ff2d55]/10 hover:border-[#ff2d55] transition-all duration-300"
                 style={{ fontFamily: "monospace" }}
               >
-                ⚡ Tech Mode
+                ⚡ Tech
               </button>
 
               <span className="text-[#8b4444] text-xl select-none">|</span>
