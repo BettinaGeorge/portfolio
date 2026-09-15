@@ -807,7 +807,7 @@ function TestimonialsTicker() {
       <motion.div
         style={{ display: "flex", width: "max-content" }}
         animate={{ x: ["0%", "-50%"] }}
-        transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 110, repeat: Infinity, ease: "linear" }}
       >
         {items.map((t, i) => (
           <div
