@@ -790,216 +790,49 @@ function BundleCard() {
   );
 }
 
-function TestimonialSourceRow({ source, proof, onSeeProof }: { source: string; proof?: string; onSeeProof: (proof: string) => void }) {
+function TestimonialsTicker() {
+  const items = [...TESTIMONIALS, ...TESTIMONIALS];
+
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-      <p
-        style={{
-          fontFamily: SANS,
-          fontSize: 10,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: C.muted,
-        }}
-      >
-        — {source}
-      </p>
-      {proof && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onSeeProof(proof);
-          }}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 5,
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            color: C.crimson,
-            fontFamily: SANS,
-            fontSize: 9,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            opacity: 0.85,
-            transition: "opacity 0.2s",
-            whiteSpace: "nowrap",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.85")}
-        >
-          <ReceiptIcon size={11} />
-          See proof
-        </button>
-      )}
+    <div
+      style={{
+        overflow: "hidden",
+        maskImage: "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)",
+        WebkitMaskImage: "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)",
+      }}
+    >
+      <div className="testimonial-ticker-track" style={{ display: "flex", width: "max-content" }}>
+        {items.map((t, i) => (
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 18,
+              padding: "0 36px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span style={{ fontFamily: PLAYFAIR, fontSize: 22, color: C.crimson, opacity: 0.6 }}>“</span>
+            <span style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 18, color: C.cream }}>
+              {t.quote}
+            </span>
+            <span
+              style={{
+                fontFamily: SANS,
+                fontSize: 10,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: C.muted,
+              }}
+            >
+              — {t.source}
+            </span>
+            <span style={{ color: C.dimmed, fontSize: 14 }}>✦</span>
+          </div>
+        ))}
+      </div>
     </div>
-  );
-}
-
-function ChevronIcon({ open, size = 12 }: { open: boolean; size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease" }}
-    >
-      <path d="M6 9l6 6 6-6" />
-    </svg>
-  );
-}
-
-function TestimonialCard({
-  quote,
-  source,
-  proof,
-  index,
-  onSeeProof,
-}: {
-  quote: string;
-  source: string;
-  proof?: string;
-  index: number;
-  onSeeProof: (proof: string) => void;
-}) {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ layout: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }, opacity: { duration: 0.45, delay: (index % 6) * 0.07 } }}
-      onClick={() => setExpanded((v) => !v)}
-      style={{
-        alignSelf: "start",
-        border: `1px solid ${expanded ? C.crimson : C.border}`,
-        borderRadius: 8,
-        padding: "26px 24px 22px",
-        background: C.bgCard,
-        textAlign: "left",
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-        cursor: "pointer",
-        transition: "border-color 0.25s",
-      }}
-    >
-      <motion.div layout="position" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-        <span style={{ fontFamily: PLAYFAIR, fontSize: 34, color: C.crimson, opacity: 0.5, lineHeight: 0.5 }}>
-          “
-        </span>
-        <span style={{ color: C.dimmed, marginTop: 4 }}>
-          <ChevronIcon open={expanded} />
-        </span>
-      </motion.div>
-      <motion.p
-        layout
-        style={{
-          fontFamily: PLAYFAIR,
-          fontStyle: "italic",
-          fontSize: 14,
-          color: C.blush,
-          lineHeight: 1.75,
-          display: expanded ? "block" : "-webkit-box",
-          WebkitLineClamp: expanded ? undefined : 3,
-          WebkitBoxOrient: expanded ? undefined : "vertical",
-          overflow: expanded ? "visible" : "hidden",
-        }}
-      >
-        {quote}
-      </motion.p>
-      <motion.div layout="position">
-        <TestimonialSourceRow source={source} proof={proof} onSeeProof={onSeeProof} />
-      </motion.div>
-    </motion.div>
-  );
-}
-
-function ProofLightbox({ src, onClose }: { src: string; onClose: () => void }) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 1000,
-        background: "rgba(6,2,4,0.92)",
-        backdropFilter: "blur(6px)",
-        WebkitBackdropFilter: "blur(6px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "60px 24px",
-        cursor: "zoom-out",
-      }}
-    >
-      <button
-        onClick={onClose}
-        aria-label="Close"
-        style={{
-          position: "fixed",
-          top: 20,
-          right: 20,
-          zIndex: 1001,
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          border: `1px solid ${C.border}`,
-          background: "rgba(13,4,7,0.85)",
-          color: C.cream,
-          cursor: "pointer",
-        }}
-      >
-        ✕
-      </button>
-      <motion.img
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        onClick={(e) => e.stopPropagation()}
-        src={src}
-        alt="Testimonial proof"
-        style={{
-          maxWidth: "min(92vw, 560px)",
-          maxHeight: "82vh",
-          width: "auto",
-          height: "auto",
-          objectFit: "contain",
-          borderRadius: 8,
-          border: `1px solid ${C.border}`,
-          cursor: "default",
-        }}
-      />
-    </motion.div>
   );
 }
 
@@ -1323,7 +1156,6 @@ function ReelsGrid() {
 /* ─── main page ────────────────────────────────────────────────────────── */
 export function CreatorPage() {
   const router = useRouter();
-  const [proofImage, setProofImage] = useState<string | null>(null);
 
   return (
     <div
@@ -1719,62 +1551,97 @@ export function CreatorPage() {
       <Rule />
 
       {/* ── testimonials ───────────────────────────────────────────────── */}
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "100px 40px", textAlign: "center" }}>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <p
-            style={{
-              fontSize: 10,
-              letterSpacing: "0.3em",
-              textTransform: "uppercase",
-              color: C.crimson,
-              marginBottom: 16,
-              fontFamily: SANS,
-            }}
+      <section style={{ padding: "100px 0" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 40px", textAlign: "center" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
           >
-            <Ornament /> &nbsp; in their words &nbsp; <Ornament />
-          </p>
-          <h2
-            style={{
-              fontFamily: PLAYFAIR,
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
-              fontWeight: 900,
-              color: C.cream,
-              lineHeight: 1.1,
-              marginBottom: 40,
-            }}
-          >
-            Testimonials
-          </h2>
-        </motion.div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: 20,
-            textAlign: "left",
-          }}
-        >
-          {TESTIMONIALS.map((t, i) => (
-            <TestimonialCard
-              key={i}
-              quote={t.quote}
-              source={t.source}
-              proof={t.proof}
-              index={i}
-              onSeeProof={setProofImage}
-            />
-          ))}
+            <p
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.3em",
+                textTransform: "uppercase",
+                color: C.crimson,
+                marginBottom: 16,
+                fontFamily: SANS,
+              }}
+            >
+              <Ornament /> &nbsp; in their words &nbsp; <Ornament />
+            </p>
+            <h2
+              style={{
+                fontFamily: PLAYFAIR,
+                fontSize: "clamp(2rem, 5vw, 3.5rem)",
+                fontWeight: 900,
+                color: C.cream,
+                lineHeight: 1.1,
+                marginBottom: 40,
+              }}
+            >
+              Testimonials
+            </h2>
+          </motion.div>
         </div>
 
-        <AnimatePresence>
-          {proofImage && <ProofLightbox src={proofImage} onClose={() => setProofImage(null)} />}
-        </AnimatePresence>
+        <div style={{ margin: "8px 0 48px" }}>
+          <TestimonialsTicker />
+        </div>
+
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 40px", textAlign: "center" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+          >
+            <button
+              onClick={() => router.push("/creator/receipts")}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "14px 30px",
+                borderRadius: 999,
+                border: `1px solid ${C.border}`,
+                background: `${C.crimson}1a`,
+                color: C.cream,
+                fontFamily: SANS,
+                fontSize: 12,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s, border-color 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = `0 12px 32px -10px ${C.crimson}66`;
+                e.currentTarget.style.borderColor = C.crimson;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.borderColor = C.border;
+              }}
+            >
+              <ReceiptIcon size={16} />
+              See the Receipts
+            </button>
+            <p
+              style={{
+                fontFamily: PLAYFAIR,
+                fontStyle: "italic",
+                fontSize: 11,
+                color: C.dimmed,
+                marginTop: 14,
+              }}
+            >
+              every quote above, straight from the DM or inbox it came from
+            </p>
+          </motion.div>
+        </div>
       </section>
 
       <Rule />

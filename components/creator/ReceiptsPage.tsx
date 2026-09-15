@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { C, PLAYFAIR, SCRIPT, SANS, IG_ACCENT, TT_ACCENT } from "@/lib/creator-theme";
 
-type Receipt = { src: string; alt: string; tag: string };
+type Receipt = { src: string; alt: string; tag: string; aspect?: string };
 
 const IG_RECEIPTS: Receipt[] = [
   {
@@ -89,6 +89,69 @@ const TIKTOK_RECEIPTS: Receipt[] = [
   },
 ];
 
+const TESTIMONIAL_RECEIPTS: Receipt[] = [
+  {
+    src: "/img/testimonials/t1-mk-effort-creativity.png",
+    alt: "Michael Kors campaign team — thank you for the effort and creativity",
+    tag: "Email",
+    aspect: "568/346",
+  },
+  {
+    src: "/img/testimonials/t2-mk-approved-livegoal.png",
+    alt: "Michael Kors Pour Femme campaign — content approved, all set to go live",
+    tag: "Email",
+    aspect: "1654/340",
+  },
+  {
+    src: "/img/testimonials/t3-mk-invite.png",
+    alt: "Michael Kors brand team — campaign invite",
+    tag: "Email",
+    aspect: "1082/244",
+  },
+  {
+    src: "/img/testimonials/t4-vaseline-invite.png",
+    alt: "Vaseline partner agency — campaign invite",
+    tag: "Email",
+    aspect: "1220/112",
+  },
+  {
+    src: "/img/testimonials/t5-so-happy-accepted.png",
+    alt: "Campaign manager — so happy you were accepted",
+    tag: "Email",
+    aspect: "1820/70",
+  },
+  {
+    src: "/img/testimonials/t6-ig-love-content.png",
+    alt: "Instagram DM — we love your content bettina",
+    tag: "Instagram DM",
+    aspect: "444/60",
+  },
+  {
+    src: "/img/testimonials/t7-sprite-aholic.png",
+    alt: "Instagram comment — Naw we need more Nigerian influencers making good content",
+    tag: "Instagram Comment",
+    aspect: "686/80",
+  },
+  {
+    src: "/img/testimonials/t8-peak-contents.png",
+    alt: "Instagram DM — you make peak contents",
+    tag: "Instagram DM",
+    aspect: "350/108",
+  },
+  {
+    src: "/img/testimonials/t9-thanks-campaign.png",
+    alt: "Campaign team — thanks again for being part of this campaign",
+    tag: "Email",
+    aspect: "532/220",
+  },
+  {
+    src: "/img/testimonials/t10-keep-in-mind.png",
+    alt: "Brand partner — it's been lovely working with you",
+    tag: "Email",
+    aspect: "524/190",
+  },
+];
+
 function Ornament() {
   return <span style={{ color: C.crimson, opacity: 0.6, userSelect: "none" }}>✦</span>;
 }
@@ -106,11 +169,15 @@ function ReceiptCard({
   accent,
   index,
   onSelect,
+  aspect = "9/16",
+  fit = "cover",
 }: {
   receipt: Receipt;
   accent: string;
   index: number;
   onSelect: (r: Receipt) => void;
+  aspect?: string;
+  fit?: "cover" | "contain";
 }) {
   return (
     <motion.button
@@ -169,13 +236,13 @@ function ReceiptCard({
       >
         <ExpandIcon size={13} />
       </span>
-      <div style={{ position: "relative", width: "100%", aspectRatio: "9/16" }}>
+      <div style={{ position: "relative", width: "100%", aspectRatio: receipt.aspect ?? aspect }}>
         <Image
           src={receipt.src}
           alt={receipt.alt}
           fill
           sizes="(max-width: 640px) 90vw, 300px"
-          style={{ objectFit: "cover", objectPosition: "top" }}
+          style={{ objectFit: fit, objectPosition: fit === "contain" ? "center" : "top" }}
         />
       </div>
     </motion.button>
@@ -188,12 +255,18 @@ function ReceiptSection({
   accent,
   receipts,
   onSelect,
+  aspect,
+  fit,
+  minCardWidth = 240,
 }: {
   label: string;
   Icon: (props: { size?: number }) => ReactElement;
   accent: string;
   receipts: Receipt[];
   onSelect: (r: Receipt) => void;
+  aspect?: string;
+  fit?: "cover" | "contain";
+  minCardWidth?: number;
 }) {
   return (
     <div style={{ marginBottom: 72 }}>
@@ -228,12 +301,12 @@ function ReceiptSection({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+          gridTemplateColumns: `repeat(auto-fill, minmax(${minCardWidth}px, 1fr))`,
           gap: 20,
         }}
       >
         {receipts.map((r, i) => (
-          <ReceiptCard key={r.src} receipt={r} accent={accent} index={i} onSelect={onSelect} />
+          <ReceiptCard key={r.src} receipt={r} accent={accent} index={i} onSelect={onSelect} aspect={aspect} fit={fit} />
         ))}
       </div>
     </div>
@@ -255,6 +328,14 @@ function TikTokIcon({ size = 22 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M14 4v10.4a3.4 3.4 0 1 1-2.6-3.3" />
       <path d="M14 4c.5 2.7 2.4 4.4 4.7 4.6" />
+    </svg>
+  );
+}
+
+function QuoteIcon({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 8c-2.2 0-4 1.8-4 4s1.8 4 4 4c.3 2-1 3.5-3 4M17 8c-2.2 0-4 1.8-4 4s1.8 4 4 4c.3 2-1 3.5-3 4" />
     </svg>
   );
 }
@@ -477,6 +558,15 @@ export function ReceiptsPage() {
       <section style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px 100px" }}>
         <ReceiptSection label="Instagram" Icon={InstagramIcon} accent={IG_ACCENT} receipts={IG_RECEIPTS} onSelect={setLightbox} />
         <ReceiptSection label="TikTok" Icon={TikTokIcon} accent={TT_ACCENT} receipts={TIKTOK_RECEIPTS} onSelect={setLightbox} />
+        <ReceiptSection
+          label="Testimonials"
+          Icon={QuoteIcon}
+          accent={C.crimson}
+          receipts={TESTIMONIAL_RECEIPTS}
+          onSelect={setLightbox}
+          fit="contain"
+          minCardWidth={280}
+        />
       </section>
 
       <AnimatePresence>

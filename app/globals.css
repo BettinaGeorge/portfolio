@@ -22,6 +22,20 @@
   to   { transform: translateY(0);    }
 }
 
+/* headline-style testimonial ticker — leftward scroll, -50% loops seamlessly */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.testimonial-ticker-track {
+  animation: marqueeScroll 55s linear infinite;
+}
+
+.testimonial-ticker-track:hover {
+  animation-play-state: paused;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
