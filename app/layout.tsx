@@ -31,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${luxuriousScript.variable} ${inter.variable} ${playfairDisplay.variable}`}>
-      <body>{children}</body>
+    <html lang="en" className={`${luxuriousScript.variable} ${inter.variable} ${playfairDisplay.variable}`} suppressHydrationWarning>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
