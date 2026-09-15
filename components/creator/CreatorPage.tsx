@@ -1450,10 +1450,10 @@ export function CreatorPage() {
                 marginBottom: 24,
               }}
             >
-              I don&apos;t just
+              I don&apos;t chase
               <br />
-              <span style={{ fontStyle: "italic", color: C.blush }}>tell stories —</span>
-              <br />I build them.
+              <span style={{ fontStyle: "italic", color: C.blush }}>comfort —</span>
+              <br />I chase growth.
             </h2>
             <p
               style={{
@@ -1464,9 +1464,11 @@ export function CreatorPage() {
                 marginBottom: 16,
               }}
             >
-              I&apos;m Bettina — a software engineer and creative who lives at the intersection
-              of content, strategy, and technology. I create with intention: every caption,
-              reel, and visual is crafted to connect, not just to post.
+              I&apos;m Bettina — born in the U.S., raised in Nigeria, and right now a senior at
+              the University of North Carolina at Chapel Hill studying computer science and
+              information science, spending this semester abroad in Australia. My content lives
+              in fitness, beauty, and lifestyle and travel — real routines, real places, real
+              life, documented as I actually live it.
             </p>
             <p
               style={{
@@ -1477,9 +1479,11 @@ export function CreatorPage() {
                 marginBottom: 24,
               }}
             >
-              What makes my approach different? I build my own tools — AI-powered platforms
-              that analyze what&apos;s working, surface patterns, and turn data into creative
-              strategy. Aesthetic meets analytical.
+              I&apos;m still new to content, UGC, and marketing — and I like it that way.
+              I&apos;m an adventurous person who&apos;s eager to grow, so I go looking for
+              discomfort instead of avoiding it. My mental health journey has shaped who I am
+              more than anything else, and my faith grounds all of it. I talk about both openly
+              on my page, because the version of me worth following is the honest one.
             </p>
             <p
               style={{
@@ -1492,8 +1496,8 @@ export function CreatorPage() {
                 paddingLeft: 16,
               }}
             >
-              &ldquo;Some people build with code. Others build with creativity.
-              <br />I like to think I do both.&rdquo;
+              &ldquo;Growth doesn&apos;t live in the comfortable places.
+              <br />So that&apos;s exactly where I go looking for it.&rdquo;
             </p>
           </div>
         </motion.div>
