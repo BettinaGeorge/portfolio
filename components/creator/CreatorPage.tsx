@@ -806,7 +806,10 @@ function TestimonialSourceRow({ source, proof, onSeeProof }: { source: string; p
       </p>
       {proof && (
         <button
-          onClick={() => onSeeProof(proof)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSeeProof(proof);
+          }}
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -835,6 +838,24 @@ function TestimonialSourceRow({ source, proof, onSeeProof }: { source: string; p
   );
 }
 
+function ChevronIcon({ open, size = 12 }: { open: boolean; size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.25s ease" }}
+    >
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+
 function TestimonialCard({
   quote,
   source,
@@ -848,89 +869,57 @@ function TestimonialCard({
   index: number;
   onSeeProof: (proof: string) => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-  const cardBaseStyle = {
-    border: `1px solid ${C.border}`,
-    borderRadius: 8,
-    padding: "26px 24px 22px",
-    background: C.bgCard,
-    textAlign: "left" as const,
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: 16,
-  };
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <motion.div
+      layout
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-30px" }}
-      transition={{ duration: 0.45, delay: (index % 6) * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{ position: "relative", height: "100%" }}
+      transition={{ layout: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }, opacity: { duration: 0.45, delay: (index % 6) * 0.07 } }}
+      onClick={() => setExpanded((v) => !v)}
+      style={{
+        alignSelf: "start",
+        border: `1px solid ${expanded ? C.crimson : C.border}`,
+        borderRadius: 8,
+        padding: "26px 24px 22px",
+        background: C.bgCard,
+        textAlign: "left",
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        cursor: "pointer",
+        transition: "border-color 0.25s",
+      }}
     >
-      {/* base, truncated */}
-      <div style={{ ...cardBaseStyle, height: "100%" }}>
+      <motion.div layout="position" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
         <span style={{ fontFamily: PLAYFAIR, fontSize: 34, color: C.crimson, opacity: 0.5, lineHeight: 0.5 }}>
           “
         </span>
-        <p
-          style={{
-            fontFamily: PLAYFAIR,
-            fontStyle: "italic",
-            fontSize: 14,
-            color: C.blush,
-            lineHeight: 1.75,
-            flex: 1,
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {quote}
-        </p>
+        <span style={{ color: C.dimmed, marginTop: 4 }}>
+          <ChevronIcon open={expanded} />
+        </span>
+      </motion.div>
+      <motion.p
+        layout
+        style={{
+          fontFamily: PLAYFAIR,
+          fontStyle: "italic",
+          fontSize: 14,
+          color: C.blush,
+          lineHeight: 1.75,
+          display: expanded ? "block" : "-webkit-box",
+          WebkitLineClamp: expanded ? undefined : 3,
+          WebkitBoxOrient: expanded ? undefined : "vertical",
+          overflow: expanded ? "visible" : "hidden",
+        }}
+      >
+        {quote}
+      </motion.p>
+      <motion.div layout="position">
         <TestimonialSourceRow source={source} proof={proof} onSeeProof={onSeeProof} />
-      </div>
-
-      {/* hover pop-up, full text */}
-      <AnimatePresence>
-        {hovered && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              ...cardBaseStyle,
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              zIndex: 30,
-              boxShadow: "0 24px 60px -12px rgba(0,0,0,0.6)",
-              borderColor: C.crimson,
-            }}
-          >
-            <span style={{ fontFamily: PLAYFAIR, fontSize: 34, color: C.crimson, opacity: 0.5, lineHeight: 0.5 }}>
-              “
-            </span>
-            <p
-              style={{
-                fontFamily: PLAYFAIR,
-                fontStyle: "italic",
-                fontSize: 14,
-                color: C.blush,
-                lineHeight: 1.75,
-              }}
-            >
-              {quote}
-            </p>
-            <TestimonialSourceRow source={source} proof={proof} onSeeProof={onSeeProof} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
     </motion.div>
   );
 }
