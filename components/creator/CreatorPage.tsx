@@ -53,6 +53,9 @@ const REELS = [
 
 const REELS_PAGE_SIZE = 10;
 
+// flip page order: what was the last page now shows first
+const REELS_DISPLAY = [...REELS].reverse();
+
 /* ─── work grid placeholder cards ─────────────────────────────────────── */
 /* ─── media kit — pulled from Instagram & TikTok analytics dashboards ────── */
 const INSTAGRAM_STATS = [
@@ -1082,9 +1085,9 @@ function ReelLightbox({ reel, onClose }: { reel: Reel; onClose: () => void }) {
 function ReelsGrid() {
   const [page, setPage] = useState(0);
   const [expanded, setExpanded] = useState<Reel | null>(null);
-  const totalPages = Math.ceil(REELS.length / REELS_PAGE_SIZE);
+  const totalPages = Math.ceil(REELS_DISPLAY.length / REELS_PAGE_SIZE);
   const start = page * REELS_PAGE_SIZE;
-  const current = REELS.slice(start, start + REELS_PAGE_SIZE);
+  const current = REELS_DISPLAY.slice(start, start + REELS_PAGE_SIZE);
 
   return (
     <div>
