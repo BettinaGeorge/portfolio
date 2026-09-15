@@ -801,7 +801,11 @@ function TestimonialsTicker() {
         WebkitMaskImage: "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)",
       }}
     >
-      <div className="testimonial-ticker-track" style={{ display: "flex", width: "max-content" }}>
+      <motion.div
+        style={{ display: "flex", width: "max-content" }}
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+      >
         {items.map((t, i) => (
           <div
             key={i}
@@ -831,7 +835,7 @@ function TestimonialsTicker() {
             <span style={{ color: C.dimmed, fontSize: 14 }}>✦</span>
           </div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }
