@@ -161,7 +161,7 @@ const TESTIMONIALS = [
   },
   {
     quote: "Naw we need more Nigerian influencers making good content!",
-    source: "@sprite_aholic, Instagram",
+    source: "Instagram Comment",
     proof: "/img/testimonials/t7-sprite-aholic.png",
   },
   {
@@ -790,6 +790,51 @@ function BundleCard() {
   );
 }
 
+function TestimonialSourceRow({ source, proof, onSeeProof }: { source: string; proof?: string; onSeeProof: (proof: string) => void }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+      <p
+        style={{
+          fontFamily: SANS,
+          fontSize: 10,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: C.muted,
+        }}
+      >
+        — {source}
+      </p>
+      {proof && (
+        <button
+          onClick={() => onSeeProof(proof)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            color: C.crimson,
+            fontFamily: SANS,
+            fontSize: 9,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            opacity: 0.85,
+            transition: "opacity 0.2s",
+            whiteSpace: "nowrap",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.85")}
+        >
+          <ReceiptIcon size={11} />
+          See proof
+        </button>
+      )}
+    </div>
+  );
+}
+
 function TestimonialCard({
   quote,
   source,
@@ -803,79 +848,89 @@ function TestimonialCard({
   index: number;
   onSeeProof: (proof: string) => void;
 }) {
+  const [hovered, setHovered] = useState(false);
+  const cardBaseStyle = {
+    border: `1px solid ${C.border}`,
+    borderRadius: 8,
+    padding: "26px 24px 22px",
+    background: C.bgCard,
+    textAlign: "left" as const,
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: 16,
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-30px" }}
       transition={{ duration: 0.45, delay: (index % 6) * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        border: `1px solid ${C.border}`,
-        borderRadius: 8,
-        padding: "26px 24px 22px",
-        background: C.bgCard,
-        textAlign: "left",
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-        height: "100%",
-      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ position: "relative", height: "100%" }}
     >
-      <span style={{ fontFamily: PLAYFAIR, fontSize: 34, color: C.crimson, opacity: 0.5, lineHeight: 0.5 }}>
-        “
-      </span>
-      <p
-        style={{
-          fontFamily: PLAYFAIR,
-          fontStyle: "italic",
-          fontSize: 14,
-          color: C.blush,
-          lineHeight: 1.75,
-          flex: 1,
-        }}
-      >
-        {quote}
-      </p>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+      {/* base, truncated */}
+      <div style={{ ...cardBaseStyle, height: "100%" }}>
+        <span style={{ fontFamily: PLAYFAIR, fontSize: 34, color: C.crimson, opacity: 0.5, lineHeight: 0.5 }}>
+          “
+        </span>
         <p
           style={{
-            fontFamily: SANS,
-            fontSize: 10,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: C.muted,
+            fontFamily: PLAYFAIR,
+            fontStyle: "italic",
+            fontSize: 14,
+            color: C.blush,
+            lineHeight: 1.75,
+            flex: 1,
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
-          — {source}
+          {quote}
         </p>
-        {proof && (
-          <button
-            onClick={() => onSeeProof(proof)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 5,
-              background: "none",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              color: C.crimson,
-              fontFamily: SANS,
-              fontSize: 9,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              opacity: 0.85,
-              transition: "opacity 0.2s",
-              whiteSpace: "nowrap",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.85")}
-          >
-            <ReceiptIcon size={11} />
-            See proof
-          </button>
-        )}
+        <TestimonialSourceRow source={source} proof={proof} onSeeProof={onSeeProof} />
       </div>
+
+      {/* hover pop-up, full text */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              ...cardBaseStyle,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              zIndex: 30,
+              boxShadow: "0 24px 60px -12px rgba(0,0,0,0.6)",
+              borderColor: C.crimson,
+            }}
+          >
+            <span style={{ fontFamily: PLAYFAIR, fontSize: 34, color: C.crimson, opacity: 0.5, lineHeight: 0.5 }}>
+              “
+            </span>
+            <p
+              style={{
+                fontFamily: PLAYFAIR,
+                fontStyle: "italic",
+                fontSize: 14,
+                color: C.blush,
+                lineHeight: 1.75,
+              }}
+            >
+              {quote}
+            </p>
+            <TestimonialSourceRow source={source} proof={proof} onSeeProof={onSeeProof} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
