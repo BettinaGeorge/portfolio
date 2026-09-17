@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ParticleField } from "./ParticleField";
+import { NameGlitterReveal } from "./NameGlitterReveal";
 
 export function LandingClient() {
   const router = useRouter();
@@ -44,18 +45,21 @@ export function LandingClient() {
             className="relative flex flex-col items-center gap-10 px-6 text-center"
             style={{ zIndex: 2 }}
           >
-            <motion.h1
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="leading-none tracking-wide text-[#f0e6d3] drop-shadow-lg select-none"
-              style={{
-                fontFamily: "var(--font-luxurious-script)",
-                fontSize: "clamp(3.5rem, 12vw, 9rem)",
-              }}
-            >
-              Bettina George
-            </motion.h1>
+            <div className="relative">
+              <motion.h1
+                initial={{ y: -50, opacity: 0, scale: 0.85 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                className="leading-none tracking-wide text-[#fff3b8] drop-shadow-lg select-none"
+                style={{
+                  fontFamily: "var(--font-luxurious-script)",
+                  fontSize: "clamp(3.5rem, 12vw, 9rem)",
+                }}
+              >
+                Bettina George
+              </motion.h1>
+              <NameGlitterReveal soundSrc="/audio/glitter-reveal.mp3" />
+            </div>
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}

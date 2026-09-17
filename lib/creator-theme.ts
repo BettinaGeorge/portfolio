@@ -7,8 +7,8 @@ export const C = {
   gold:     "#c4923e",
   cream:    "#f0e6d3",
   blush:    "#c4a0a8",
-  muted:    "#6b3040",
-  dimmed:   "#3a1420",
+  muted:    "#a86e7e",
+  dimmed:   "#82505e",
   border:   "rgba(192,52,79,0.18)",
   borderDim:"rgba(192,52,79,0.09)",
 };

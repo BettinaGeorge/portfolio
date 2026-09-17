@@ -4,57 +4,45 @@ import { useState, useEffect, useRef, type ReactElement } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, animate, useInView } from "framer-motion";
 import Image from "next/image";
-import Script from "next/script";
 import { C, PLAYFAIR, SCRIPT, SANS, IG_ACCENT, TT_ACCENT } from "@/lib/creator-theme";
+import { NameGlitterReveal } from "@/components/landing/NameGlitterReveal";
+import { RoamingCircles } from "@/components/landing/RoamingCircles";
 
-/* ─── real reels, pulled from creator's own spreadsheet ───────────────── */
-const REELS = [
-  { url: "https://www.instagram.com/reel/DMGH-c7OuZG/", niche: "Travel", cover: "/img/reels/DMGH-c7OuZG.jpg" },
-  { url: "https://www.instagram.com/reel/DL2lSqsOB59/", niche: "Travel · Lifestyle", cover: "/img/reels/DL2lSqsOB59.jpg" },
-  { url: "https://www.instagram.com/reel/DL-YhgcMXlE/", niche: "Travel · Lifestyle · Events", cover: "/img/reels/DL-YhgcMXlE.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DNyK94EWt2r/", niche: "Beauty GRWM", cover: "/img/reels/DNyK94EWt2r.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DOJr9_zkqbb/", niche: "Beauty GRWM", cover: "/img/reels/DOJr9_zkqbb.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DPUVubrDr15/", niche: "Lifestyle", cover: "/img/reels/DPUVubrDr15.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DPHG25jDXMb/", niche: "Fashion", cover: "/img/reels/DPHG25jDXMb.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DPPMKe1jtSu/", niche: "Fitness", cover: "/img/reels/DPPMKe1jtSu.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DSIreFqkrIc/", niche: "Fitness", cover: "/img/reels/DSIreFqkrIc.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DRsnhB0EgEg/", niche: "Fashion", cover: "/img/reels/DRsnhB0EgEg.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DRu78o4EpvU/", niche: "Makeup Transitions", cover: "/img/reels/DRu78o4EpvU.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DSgHntJgskw/", niche: "Beauty GRWM", cover: "/img/reels/DSgHntJgskw.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DS00bWGgnoc/", niche: "Fitness", cover: "/img/reels/DS00bWGgnoc.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DTB0220gpa2/", niche: "Beauty · Storytelling", cover: "/img/reels/DTB0220gpa2.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DTVwV6KDvF0/", niche: "Fitness", cover: "/img/reels/DTVwV6KDvF0.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DTYnud0ElPO/", niche: "Travel", cover: "/img/reels/DTYnud0ElPO.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DTQiWDDjquC/", niche: "Travel", cover: "/img/reels/DTQiWDDjquC.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DTyRiWpEjWU/", niche: "Beauty", cover: "/img/reels/DTyRiWpEjWU.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DU1Y-DgkpwS/", niche: "Beauty", cover: "/img/reels/DU1Y-DgkpwS.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DV6iCUAjjoS/", niche: "Beauty", cover: "/img/reels/DV6iCUAjjoS.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DV88CjKjbT9/", niche: "Travel", cover: "/img/reels/DV88CjKjbT9.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DWW-IS2jAXp/", niche: "Beauty · Hair", cover: "/img/reels/DWW-IS2jAXp.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DWzVf8XjJNG/", niche: "Beauty · Hair", cover: "/img/reels/DWzVf8XjJNG.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DW4o52_kiG7/", niche: "Beauty GRWM", cover: "/img/reels/DW4o52_kiG7.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DW-ImyoDdMy/", niche: "Storytelling", cover: "/img/reels/DW-ImyoDdMy.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DXQCaYRjSz3/", niche: "Beauty L'Oréal", cover: "/img/reels/DXQCaYRjSz3.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DXXw8pEjX8n/", niche: "Beauty Storytelling", cover: "/img/reels/DXXw8pEjX8n.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DXhldJYDLfJ/", niche: "Fitness", cover: "/img/reels/DXhldJYDLfJ.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DawKcNKtiez/", niche: "Fitness", cover: "/img/reels/DawKcNKtiez.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DbtHUZtsILs/", niche: "Fitness", cover: "/img/reels/DbtHUZtsILs.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DbyPePcsc7-/", niche: "Fitness", cover: "/img/reels/DbyPePcsc7-.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DcWQNQlsybp/", niche: "Fitness", cover: "/img/reels/DcWQNQlsybp.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/Db05rhOsntd/", niche: "Storytelling", cover: "/img/reels/Db05rhOsntd.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DcCeQ4kMwXW/", niche: "Lifestyle", cover: "/img/reels/DcCeQ4kMwXW.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DHRLnmcuWQo/", niche: "Travel", cover: "/img/reels/DHRLnmcuWQo.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DHrIbalyhBR/", niche: "Storytelling", cover: "/img/reels/DHrIbalyhBR.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/Dc95OAmSmyo/", niche: "Travel", cover: "/img/reels/Dc95OAmSmyo.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DdCF3YtSX3f/", niche: "Travel", cover: "/img/reels/DdCF3YtSX3f.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DdLy6FdSzpy/", niche: "Beauty", cover: "/img/reels/DdLy6FdSzpy.jpg" },
-  { url: "https://www.instagram.com/_be.t.tina_/reel/DdDBU3My70j/", niche: "Fitness", cover: "/img/reels/DdDBU3My70j.jpg" },
+/* ─── real reels, self-hosted so they play in-page (no Instagram link-out) ── */
+const REELS_DISPLAY = [
+  { id: "DdDBU3My70j", niche: "Beauty", cover: "/img/reels/DdDBU3My70j.jpg", video: "/videos/reels/DdDBU3My70j.mp4" },
+  { id: "Dc95OAmSmyo", niche: "Travel", cover: "/img/reels/Dc95OAmSmyo.jpg", video: "/videos/reels/Dc95OAmSmyo.mp4" },
+  { id: "DHrIbalyhBR", niche: "Travel", cover: "/img/reels/DHrIbalyhBR.jpg", video: "/videos/reels/DHrIbalyhBR.mp4" },
+  { id: "DcCeQ4kMwXW", niche: "Lifestyle", cover: "/img/reels/DcCeQ4kMwXW.jpg", video: "/videos/reels/DcCeQ4kMwXW.mp4" },
+  { id: "Db05rhOsntd", niche: "Storytelling", cover: "/img/reels/Db05rhOsntd.jpg", video: "/videos/reels/Db05rhOsntd.mp4" },
+  { id: "DbyPePcsc7-", niche: "Fitness", cover: "/img/reels/DbyPePcsc7-.jpg", video: "/videos/reels/DbyPePcsc7-.mp4" },
+  { id: "DXQCaYRjSz3", niche: "Beauty L'Oréal", cover: "/img/reels/DXQCaYRjSz3.jpg", video: "/videos/reels/DXQCaYRjSz3.mp4" },
+  { id: "DW-ImyoDdMy", niche: "Storytelling", cover: "/img/reels/DW-ImyoDdMy.jpg", video: "/videos/reels/DW-ImyoDdMy.mp4" },
+  { id: "DW4o52_kiG7", niche: "Beauty GRWM", cover: "/img/reels/DW4o52_kiG7.jpg", video: "/videos/reels/DW4o52_kiG7.mp4" },
+  { id: "DWW-IS2jAXp", niche: "Beauty · Hair", cover: "/img/reels/DWW-IS2jAXp.jpg", video: "/videos/reels/DWW-IS2jAXp.mp4" },
+  { id: "DV6iCUAjjoS", niche: "Lifestyle", cover: "/img/reels/DV6iCUAjjoS.jpg", video: "/videos/reels/DV6iCUAjjoS.mp4" },
+  { id: "DTyRiWpEjWU", niche: "Beauty", cover: "/img/reels/DTyRiWpEjWU.jpg", video: "/videos/reels/DTyRiWpEjWU.mp4" },
+  { id: "DTQiWDDjquC", niche: "Travel", cover: "/img/reels/DTQiWDDjquC.jpg", video: "/videos/reels/DTQiWDDjquC.mp4" },
+  { id: "DTVwV6KDvF0", niche: "Fitness", cover: "/img/reels/DTVwV6KDvF0.jpg", video: "/videos/reels/DTVwV6KDvF0.mp4" },
+  { id: "DTB0220gpa2", niche: "Beauty · Storytelling", cover: "/img/reels/DTB0220gpa2.jpg", video: "/videos/reels/DTB0220gpa2.mp4" },
+  { id: "DSgHntJgskw", niche: "Beauty GRWM", cover: "/img/reels/DSgHntJgskw.jpg", video: "/videos/reels/DSgHntJgskw.mp4" },
+  { id: "DSIreFqkrIc", niche: "Beauty", cover: "/img/reels/DSIreFqkrIc.jpg", video: "/videos/reels/DSIreFqkrIc.mp4" },
+  { id: "DPPMKe1jtSu", niche: "Fitness", cover: "/img/reels/DPPMKe1jtSu.jpg", video: "/videos/reels/DPPMKe1jtSu.mp4" },
+  { id: "DPHG25jDXMb", niche: "Fashion", cover: "/img/reels/DPHG25jDXMb.jpg", video: "/videos/reels/DPHG25jDXMb.mp4" },
+  { id: "DPUVubrDr15", niche: "Lifestyle", cover: "/img/reels/DPUVubrDr15.jpg", video: "/videos/reels/DPUVubrDr15.mp4" },
+  { id: "DOJr9_zkqbb", niche: "Beauty GRWM", cover: "/img/reels/DOJr9_zkqbb.jpg", video: "/videos/reels/DOJr9_zkqbb.mp4" },
+  { id: "DNyK94EWt2r", niche: "Beauty GRWM", cover: "/img/reels/DNyK94EWt2r.jpg", video: "/videos/reels/DNyK94EWt2r.mp4" },
+  { id: "DL2lSqsOB59", niche: "Travel · Lifestyle", cover: "/img/reels/DL2lSqsOB59.jpg", video: "/videos/reels/DL2lSqsOB59.mp4" },
+  { id: "DMGH-c7OuZG", niche: "Travel", cover: "/img/reels/DMGH-c7OuZG.jpg", video: "/videos/reels/DMGH-c7OuZG.mp4" },
+  { id: "extra-01", niche: "Beauty", cover: "/img/reels/extra-01.jpg", video: "/videos/reels/extra-01.mp4" },
+  { id: "extra-03", niche: "Lifestyle", cover: "/img/reels/extra-03.jpg", video: "/videos/reels/extra-03.mp4" },
+  { id: "extra-04", niche: "Travel", cover: "/img/reels/extra-04.jpg", video: "/videos/reels/extra-04.mp4" },
+  { id: "extra-05", niche: "Beauty GRWM", cover: "/img/reels/extra-05.jpg", video: "/videos/reels/extra-05.mp4" },
+  { id: "extra-07", niche: "Fashion", cover: "/img/reels/extra-07.jpg", video: "/videos/reels/extra-07.mp4" },
+  { id: "extra-09", niche: "Travel", cover: "/img/reels/extra-09-v2.jpg", video: "/videos/reels/extra-09.mp4" },
 ];
 
-const REELS_PAGE_SIZE = 10;
-
-// flip page order: what was the last page now shows first
-const REELS_DISPLAY = [...REELS].reverse();
+const REELS_PAGE_SIZE = 6;
 
 /* ─── work grid placeholder cards ─────────────────────────────────────── */
 /* ─── media kit — pulled from Instagram & TikTok analytics dashboards ────── */
@@ -861,24 +849,6 @@ function ArrowIcon({ direction = "right", size = 16 }: { direction?: "left" | "r
   );
 }
 
-function InstagramEmbed({ url }: { url: string }) {
-  return (
-    <blockquote
-      className="instagram-media"
-      data-instgrm-permalink={url}
-      data-instgrm-version="14"
-      style={{
-        background: "#FFF",
-        border: 0,
-        borderRadius: 8,
-        margin: 0,
-        width: "100%",
-        minWidth: 0,
-      }}
-    />
-  );
-}
-
 function PlayIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -887,9 +857,30 @@ function PlayIcon({ size = 20 }: { size?: number }) {
   );
 }
 
-type Reel = { url: string; niche: string; cover: string };
+type Reel = { id: string; niche: string; cover: string; video: string };
 
 function ReelTile({ reel, index, onOpen }: { reel: Reel; index: number; onOpen: (r: Reel) => void }) {
+  const [hovering, setHovering] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const startPreview = () => {
+    setHovering(true);
+    const v = videoRef.current;
+    if (v) {
+      v.currentTime = 0;
+      v.play().catch(() => {});
+    }
+  };
+
+  const stopPreview = () => {
+    setHovering(false);
+    const v = videoRef.current;
+    if (v) {
+      v.pause();
+      v.currentTime = 0;
+    }
+  };
+
   return (
     <motion.button
       onClick={() => onOpen(reel)}
@@ -908,8 +899,18 @@ function ReelTile({ reel, index, onOpen }: { reel: Reel; index: number; onOpen: 
         display: "block",
         transition: "border-color 0.2s",
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.borderColor = C.crimson)}
-      onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.borderDim)}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = C.crimson;
+        startPreview();
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = C.borderDim;
+        stopPreview();
+      }}
+      onFocus={startPreview}
+      onBlur={stopPreview}
+      onTouchStart={startPreview}
+      onTouchEnd={stopPreview}
     >
       <Image
         src={reel.cover}
@@ -917,6 +918,25 @@ function ReelTile({ reel, index, onOpen }: { reel: Reel; index: number; onOpen: 
         fill
         sizes="140px"
         style={{ objectFit: "cover" }}
+      />
+
+      <video
+        ref={videoRef}
+        src={reel.video}
+        muted
+        loop
+        playsInline
+        preload="none"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          opacity: hovering ? 1 : 0,
+          transition: "opacity 0.2s",
+          pointerEvents: "none",
+        }}
       />
 
       {/* bottom gradient for label legibility */}
@@ -958,6 +978,8 @@ function ReelTile({ reel, index, onOpen }: { reel: Reel; index: number; onOpen: 
           alignItems: "center",
           justifyContent: "center",
           color: "#fff",
+          opacity: hovering ? 0 : 1,
+          transition: "opacity 0.2s",
         }}
       >
         <PlayIcon size={16} />
@@ -966,19 +988,8 @@ function ReelTile({ reel, index, onOpen }: { reel: Reel; index: number; onOpen: 
   );
 }
 
-function ExternalLinkIcon({ size = 14 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-      <path d="M15 3h6v6M10 14 21 3" />
-    </svg>
-  );
-}
-
 function ReelLightbox({ reel, onClose }: { reel: Reel; onClose: () => void }) {
   useEffect(() => {
-    const w = window as unknown as { instgrm?: { Embeds: { process: () => void } } };
-    w.instgrm?.Embeds.process();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -988,7 +999,7 @@ function ReelLightbox({ reel, onClose }: { reel: Reel; onClose: () => void }) {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [reel, onClose]);
+  }, [onClose]);
 
   return (
     <motion.div
@@ -1043,40 +1054,21 @@ function ReelLightbox({ reel, onClose }: { reel: Reel; onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
         style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, maxWidth: 420, width: "100%" }}
       >
-        <a
-          href={reel.url}
-          target="_blank"
-          rel="noopener"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "10px 20px",
-            borderRadius: 999,
-            border: `1px solid ${IG_ACCENT}66`,
-            background: `${IG_ACCENT}1a`,
-            color: C.cream,
-            fontFamily: SANS,
-            fontSize: 11,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            textDecoration: "none",
-          }}
-        >
-          Watch on Instagram <ExternalLinkIcon />
-        </a>
-        <div
+        <video
+          key={reel.video}
+          src={reel.video}
+          poster={reel.cover}
+          controls
+          autoPlay
+          playsInline
           style={{
             width: "100%",
             maxHeight: "70vh",
-            overflowY: "auto",
             borderRadius: 8,
             border: `1px solid ${C.border}`,
-            background: "#fff",
+            background: "#000",
           }}
-        >
-          <InstagramEmbed url={reel.url} />
-        </div>
+        />
       </motion.div>
     </motion.div>
   );
@@ -1091,16 +1083,17 @@ function ReelsGrid() {
 
   return (
     <div>
-      <Script src="https://www.instagram.com/embed.js" strategy="lazyOnload" />
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: 10,
+          maxWidth: 480,
+          margin: "0 auto",
         }}
       >
         {current.map((reel, i) => (
-          <ReelTile key={reel.url} reel={reel} index={i} onOpen={setExpanded} />
+          <ReelTile key={reel.id} reel={reel} index={i} onOpen={setExpanded} />
         ))}
       </div>
 
@@ -1161,8 +1154,16 @@ function ReelsGrid() {
 }
 
 /* ─── main page ────────────────────────────────────────────────────────── */
+const HERO_CIRCLES_DURATION_MS = 1050;
+
 export function CreatorPage() {
   const router = useRouter();
+  const [showHeroName, setShowHeroName] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowHeroName(true), HERO_CIRCLES_DURATION_MS);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div
@@ -1307,26 +1308,42 @@ export function CreatorPage() {
           </motion.p>
 
           {/* name */}
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          <div
             style={{
-              fontFamily: SCRIPT,
-              fontSize: "clamp(4rem, 13vw, 10rem)",
-              color: C.cream,
-              lineHeight: 1,
+              position: "relative",
               marginBottom: 32,
+              minHeight: "clamp(4rem, 13vw, 10rem)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Bettina George
-          </motion.h1>
+            {!showHeroName && <RoamingCircles />}
+            {showHeroName && (
+              <>
+                <motion.h1
+                  initial={{ opacity: 0, y: 24, scale: 0.85 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                  style={{
+                    fontFamily: SCRIPT,
+                    fontSize: "clamp(4rem, 13vw, 10rem)",
+                    color: "#fff3b8",
+                    lineHeight: 1,
+                  }}
+                >
+                  Bettina George
+                </motion.h1>
+                <NameGlitterReveal soundSrc="/audio/glitter-reveal.mp3" />
+              </>
+            )}
+          </div>
 
           {/* tagline */}
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.7 }}
+            transition={{ delay: 1.35, duration: 0.7 }}
             style={{
               fontFamily: PLAYFAIR,
               fontStyle: "italic",
@@ -1342,7 +1359,7 @@ export function CreatorPage() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.1, duration: 0.6 }}
+            transition={{ delay: 1.55, duration: 0.6 }}
             style={{
               fontFamily: SANS,
               fontSize: 12,
@@ -1350,7 +1367,7 @@ export function CreatorPage() {
               letterSpacing: "0.1em",
             }}
           >
-            who builds her own tools to work smarter
+            
           </motion.p>
         </motion.div>
 
@@ -1358,7 +1375,7 @@ export function CreatorPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.6, duration: 0.6 }}
+          transition={{ delay: 2.05, duration: 0.6 }}
           style={{
             position: "absolute",
             bottom: 40,
@@ -1428,32 +1445,18 @@ export function CreatorPage() {
 
           {/* copy */}
           <div style={{ flex: 1, minWidth: 260 }}>
-            <p
-              style={{
-                fontSize: 10,
-                letterSpacing: "0.25em",
-                textTransform: "uppercase",
-                color: C.crimson,
-                marginBottom: 20,
-                fontFamily: SANS,
-              }}
-            >
-              about
-            </p>
+        
             <h2
               style={{
                 fontFamily: PLAYFAIR,
                 fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
                 fontWeight: 900,
-                color: C.cream,
+                color: "#fff3b8",
                 lineHeight: 1.2,
                 marginBottom: 24,
               }}
             >
-              I don&apos;t chase
-              <br />
-              <span style={{ fontStyle: "italic", color: C.blush }}>comfort —</span>
-              <br />I chase growth.
+              heyy!
             </h2>
             <p
               style={{
@@ -1464,11 +1467,8 @@ export function CreatorPage() {
                 marginBottom: 16,
               }}
             >
-              I&apos;m Bettina — born in the U.S., raised in Nigeria, and right now a senior at
-              the University of North Carolina at Chapel Hill studying computer science and
-              information science, spending this semester abroad in Australia. My content lives
-              in fitness, beauty, and lifestyle and travel — real routines, real places, real
-              life, documented as I actually live it.
+              I&apos;m Bettina — born in the U.S., raised in Nigeria, about to graduate from UNC Chapel Hill next year!🥳 I'm all about 
+              in fitness, beauty, and lifestyle & travel. But most importantly, I value creativity and the power of vulnerabilty/transparency when connecting with my audience.
             </p>
             <p
               style={{
@@ -1479,11 +1479,7 @@ export function CreatorPage() {
                 marginBottom: 24,
               }}
             >
-              I&apos;m still new to content, UGC, and marketing — and I like it that way.
-              I&apos;m an adventurous person who&apos;s eager to grow, so I go looking for
-              discomfort instead of avoiding it. My mental health journey has shaped who I am
-              more than anything else, and my faith grounds all of it. I talk about both openly
-              on my page, because the version of me worth following is the honest one.
+              My mental health journey has shaped so much of who I am, and my faith has kept me grounded throughout it. I speak openly about these parts of my life because the version of me worth following is the honest one. 
             </p>
             <p
               style={{
@@ -1496,8 +1492,9 @@ export function CreatorPage() {
                 paddingLeft: 16,
               }}
             >
-              &ldquo;Growth doesn&apos;t live in the comfortable places.
-              <br />So that&apos;s exactly where I go looking for it.&rdquo;
+            
+              WELCOME!!
+              I know you'll love it here too!
             </p>
           </div>
         </motion.div>
@@ -1531,7 +1528,7 @@ export function CreatorPage() {
               fontFamily: PLAYFAIR,
               fontSize: "clamp(2rem, 5vw, 3.5rem)",
               fontWeight: 900,
-              color: C.cream,
+              color: "#fff3b8",
               lineHeight: 1.1,
             }}
           >
@@ -1553,7 +1550,7 @@ export function CreatorPage() {
             marginBottom: 32,
           }}
         >
-          Short-form storytelling — hooks, edits, and pacing built to stop the scroll.
+          
         </motion.p>
 
         <ReelsGrid />
@@ -1587,7 +1584,7 @@ export function CreatorPage() {
                 fontFamily: PLAYFAIR,
                 fontSize: "clamp(2rem, 5vw, 3.5rem)",
                 fontWeight: 900,
-                color: C.cream,
+                color: "#fff3b8",
                 lineHeight: 1.1,
                 marginBottom: 40,
               }}
@@ -1649,7 +1646,7 @@ export function CreatorPage() {
                 marginTop: 14,
               }}
             >
-              every quote above, straight from the DM or inbox it came from
+            
             </p>
           </motion.div>
         </div>
@@ -1683,7 +1680,7 @@ export function CreatorPage() {
               fontFamily: PLAYFAIR,
               fontSize: "clamp(2rem, 5vw, 3.5rem)",
               fontWeight: 900,
-              color: C.cream,
+              color: "#fff3b8",
               lineHeight: 1.1,
             }}
           >
@@ -1806,7 +1803,7 @@ export function CreatorPage() {
               marginTop: 14,
             }}
           >
-            real screenshots, straight from the dashboards — nothing here is made up
+            
           </p>
         </motion.div>
       </section>
@@ -1839,7 +1836,7 @@ export function CreatorPage() {
               fontFamily: PLAYFAIR,
               fontSize: "clamp(2rem, 5vw, 3.5rem)",
               fontWeight: 900,
-              color: C.cream,
+              color: "#fff3b8",
               lineHeight: 1.1,
               marginBottom: 12,
             }}
